@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メンバー専用ページ - ウェルネスの森を守る会</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; background-color: #f9f8f6; color: #292524; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; -webkit-font-smoothing: antialiased; }
+        header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(231, 229, 228, 0.6); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.1em; color: #065f46; margin: 0; white-space: nowrap; }
+        
+        main { max-width: 500px; margin: 0 auto; padding: 4rem 1.5rem 3rem 1.5rem; text-align: center; width: 100%; box-sizing: border-box; }
+        .auth-card { background-color: white; border-radius: 1.5rem; padding: 2.5rem 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02); border: 1px solid #e7e5e4; text-align: center; }
+        h2 { font-size: 1.35rem; font-weight: 700; color: #1c1917; margin: 0 0 1.5rem 0; line-height: 1.5; }
+        
+        .input-wrapper { position: relative; display: flex; align-items: center; margin-bottom: 1.5rem; background-color: #fafaf9; border: 1px solid #d6d3d1; border-radius: 0.75rem; box-sizing: border-box; }
+        .input-wrapper:focus-within { border-color: #059669; background-color: white; box-shadow: 0 0 0 3px rgba(6, 150, 105, 0.1); }
+        
+        input[type="password"], input[type="text"] { font-family: 'Noto Sans JP', sans-serif; width: 100%; padding: 0.85rem 3.5rem 0.85rem 1rem; font-size: 1rem; border: none; background: transparent; box-sizing: border-box; text-align: center; color: #1c1917; outline: none; }
+        
+        input::-ms-reveal, input::-ms-clear { display: none !important; }
+        input::-webkit-contacts-auto-fill-button, input::-webkit-credentials-auto-fill-button { display: none !important; }
+        
+        .toggle-password { position: absolute; right: 0.85rem; background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; color: #78716c; transition: color 0.2s, opacity 0.2s; opacity: 0; pointer-events: none; z-index: 10; }
+        .toggle-password:hover { color: #1c1917; }
+        .toggle-password.show { opacity: 1; pointer-events: auto; }
+        .toggle-password svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        
+        .btn { display: block; width: 100%; padding: 0.85rem 0; border-radius: 0.75rem; font-weight: 500; font-size: 1rem; text-decoration: none; transition: all 0.2s; box-sizing: border-box; text-align: center; cursor: pointer; border: none; }
+        .btn-submit { background-color: #059669; color: white; box-shadow: 0 4px 6px -1px rgba(6, 150, 105, 0.2); }
+        .btn-submit:hover { background-color: #047857; }
+        
+        .btn-menu { background-color: #115e59; color: white; margin-bottom: 1rem; box-shadow: 0 4px 6px -1px rgba(17, 94, 89, 0.2); }
+        .btn-menu:hover { background-color: #134e4a; }
+        
+        .btn-logout { background-color: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; margin-top: 1.5rem; }
+        .btn-logout:hover { background-color: #e5e7eb; color: #111827; }
+
+        .btn-back { background-color: #e7e5e4; color: #44403c; border: 1px solid #d6d3d1; margin-top: 0.75rem; }
+        .btn-back:hover { background-color: #d6d3d1; }
+        
+        .error-msg { color: #b91c1c; font-size: 0.875rem; font-weight: 500; margin-top: 0.75rem; min-height: 1.25rem; line-height: 1.5; }
+        .hidden { display: none !important; }
+
+        footer { background-color: #1c1917; color: #a8a29e; padding: 2rem 0; text-align: center; font-size: 0.75rem; border-top: 1px solid #292524; margin-top: auto; }
+        footer p { margin: 0; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <h1>ウェルネスの森を守る会</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="auth-card">
+            <!-- 🚪 1. パスワード入力画面 -->
+            <div id="auth-section">
+                <h2>🔒 パスワードが必要です</h2>
+                
+                <div class="input-wrapper">
+                    <input type="password" id="pw-input" inputmode="url" autocomplete="new-password" placeholder="パスワードを入力してください" oninput="handleInput()">
+                    
+                    <button type="button" class="toggle-password" id="toggle-pw-btn" onclick="togglePasswordVisibility()" title="パスワードの表示・非表示">
+                        <svg id="eye-icon" viewBox="0 0 24 24">
+                            <path d="M 3 14 A 10 9 0 0 1 21 14"></path>
+                            <circle cx="12" cy="14" r="2.5" fill="currentColor"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <button class="btn btn-submit" onclick="checkPassword()">専用ページに移ります</button>
+                <div id="error-area" class="error-msg"></div>
+            </div>
+
+            <!-- 🎯 2. メンバー専用メニュー画面 -->
+            <div id="menu-section" class="hidden">
+                <h2>👥 メンバー専用メニュー</h2>
+                
+                <a href="sanka.html" class="btn btn-menu">✍️ 出欠の入力</a>
+                <a href="shashin_up.html" class="btn btn-menu">📸 画像のアップ</a>
+                
+                <button type="button" class="btn btn-logout" onclick="logout()">🔒 ログアウト</button>
+                <a href="top.html" class="btn btn-back" onclick="logout()">↩️ Topページに戻る</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const PASSWORD_FILE_URL = "/senyou.csv";
+
+        window.addEventListener("DOMContentLoaded", () => {
+            // 既に認証済みの場合のみメニューを表示
+            if (sessionStorage.getItem("isMemberAuthenticated") === "true") {
+                document.getElementById("auth-section").classList.add("hidden");
+                document.getElementById("menu-section").classList.remove("hidden");
+            }
+        });
+
+        // 🛡️ A案：明示的にログアウト（認証情報を消去してログイン画面に戻す）
+        function logout() {
+            sessionStorage.removeItem("isMemberAuthenticated");
+            document.getElementById("pw-input").value = "";
+            document.getElementById("menu-section").classList.add("hidden");
+            document.getElementById("auth-section").classList.remove("hidden");
+        }
+
+        document.getElementById("pw-input").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkPassword();
+            }
+        });
+
+        function handleInput() {
+            const pwInput = document.getElementById("pw-input");
+            const toggleBtn = document.getElementById("toggle-pw-btn");
+            if (pwInput.value.length > 0) {
+                toggleBtn.classList.add("show");
+            } else {
+                toggleBtn.classList.remove("show");
+            }
+        }
+
+        function togglePasswordVisibility() {
+            const pwInput = document.getElementById("pw-input");
+            const iconSvg = document.getElementById("eye-icon");
+            
+            if (pwInput.type === "password") {
+                pwInput.type = "text";
+                iconSvg.innerHTML = '<path d="M 3 14 A 10 9 0 0 1 21 14"></path><circle cx="12" cy="14" r="2.5" fill="currentColor"></circle>';
+            } else {
+                pwInput.type = "password";
+                iconSvg.innerHTML = '<path d="M 3 14 A 10 9 0 0 1 21 14"></path><circle cx="12" cy="14" r="2.5" fill="currentColor"></circle><line x1="2" y1="2" x2="22" y2="22" stroke="currentColor" stroke-width="2"></line>';
+            }
+        }
+
+        function hankakuConvert(str) {
+            return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+                return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+            }).replace(/ /g, " ");
+        }
+
+        function checkPassword() {
+            const pwInput = document.getElementById("pw-input");
+            let userInput = pwInput.value.trim();
+            userInput = hankakuConvert(userInput);
+            
+            const errorArea = document.getElementById("error-area");
+            
+            if (!userInput) {
+                errorArea.innerText = "パスワードを入力してください。";
+                errorArea.style.color = "#b91c1c";
+                return;
+            }
+
+            errorArea.innerText = "認証中...";
+            errorArea.style.color = "#059669";
+
+            fetch(PASSWORD_FILE_URL)
+            .then(response => {
+                if (!response.ok) throw new Error();
+                return response.text();
+            })
+            .then(csvText => {
+                const correctPassword = csvText.replace(/^\uFEFF/, "").replace(/[\r\n]/g, "").trim();
+
+                if (userInput === correctPassword) {
+                    errorArea.innerText = "";
+                    sessionStorage.setItem("isMemberAuthenticated", "true");
+
+                    document.getElementById("auth-section").classList.add("hidden");
+                    document.getElementById("menu-section").classList.remove("hidden");
+                } else {
+                    errorArea.innerHTML = "パスワードが違います。<br>最新のパスワードは世話人から貰ってください。";
+                    errorArea.style.color = "#b91c1c";
+                }
+            })
+            .catch(error => {
+                errorArea.innerHTML = "認証エラーが発生しました。<br>最新のパスワードは世話人から貰ってください。";
+                errorArea.style.color = "#b91c1c";
+            });
+        }
+    </script>
+</body>
+</html>

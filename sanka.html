@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出欠入力 - ウェルネスの森を守る会</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; background-color: #f9f8f6; color: #292524; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+        header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(231, 229, 228, 0.6); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.1em; color: #065f46; margin: 0; }
+        
+        main { max-width: 600px; margin: 0 auto; padding: 3rem 1.15rem; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        .card { background-color: white; border-radius: 1.5rem; padding: 2.5rem 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02); border: 1px solid #e7e5e4; }
+        h2 { font-size: 1.35rem; font-weight: 700; color: #1c1917; margin: 0 0 1.5rem 0; line-height: 1.5; text-align: center; }
+        
+        .event-list { padding: 0; margin: 0; list-style: none; }
+        .event-item { margin-bottom: 1rem; border-bottom: 1px solid #e7e5e4; padding-bottom: 1rem; }
+        .event-link { display: block; font-size: 1.1rem; color: #059669; font-weight: 500; text-decoration: none; line-height: 1.6; cursor: pointer; padding: 0.5rem; border-radius: 0.5rem; transition: background-color 0.2s; }
+        .event-link:hover { background-color: #f0fdf4; text-decoration: underline; }
+        
+        /* 💡 選択したイベントの詳細ボックス（スッキリ版） */
+        .selected-event-box { background-color: #f0fdf4; border: 2px solid #bbf7d0; padding: 1.25rem 1.5rem; border-radius: 1rem; margin-bottom: 2rem; }
+        .event-detail-header { font-size: 0.85rem; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; border-bottom: 1px dashed #bbf7d0; padding-bottom: 0.25rem; }
+        .event-detail-item { font-size: 1.05rem; font-weight: 500; color: #1c1917; margin-bottom: 0.5rem; line-height: 1.5; }
+        .event-detail-item strong { font-weight: 700; color: #065f46; }
+        .event-detail-content { font-size: 1.25rem; font-weight: 700; color: #1c1917; margin-top: 0.75rem; margin-bottom: 0.75rem; line-height: 1.4; }
+        
+        .form-group { margin-bottom: 1.75rem; text-align: left; }
+        .form-label { display: block; font-weight: 700; margin-bottom: 0.5rem; color: #44403c; font-size: 1rem; }
+        
+        input[type="text"], textarea { width: 100%; padding: 0.85rem 1rem; font-size: 1.1rem; border: 1px solid #d6d3d1; border-radius: 0.75rem; background-color: #fafaf9; box-sizing: border-box; color: #1c1917; font-family: inherit; }
+        input[type="text"]:focus, textarea:focus { border-color: #059669; background-color: white; outline: none; box-shadow: 0 0 0 3px rgba(6, 150, 105, 0.1); }
+        
+        .radio-group { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+        .radio-label { flex: 1; position: relative; display: block; text-align: center; padding: 0.85rem 0; border: 2px solid #d6d3d1; border-radius: 0.75rem; font-size: 1.05rem; font-weight: 700; color: #57534e; cursor: pointer; transition: all 0.2s; background-color: #fafaf9; }
+        .radio-label input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        
+        .radio-label:has(input[value="出"]):hover { border-color: #059669; background-color: #f0fdf4; }
+        .radio-label:has(input[value="出"]):has(input:checked) { border-color: #059669; background-color: #059669; color: white; }
+        
+        .radio-label:has(input[value="欠"]):hover { border-color: #dc2626; background-color: #fef2f2; }
+        .radio-label:has(input[value="欠"]):has(input:checked) { border-color: #dc2626; background-color: #dc2626; color: white; }
+        
+        .radio-label:has(input[value="未"]):hover { border-color: #d97706; background-color: #fffbeb; }
+        .radio-label:has(input[value="未"]):has(input:checked) { border-color: #d97706; background-color: #d97706; color: white; }
+
+        .confirm-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 1.1rem; text-align: left; }
+        .confirm-table th { padding: 0.75rem 0; color: #78716c; font-weight: 500; width: 30%; border-bottom: 1px solid #e7e5e4; vertical-align: top; }
+        .confirm-table td { padding: 0.75rem 0; color: #1c1917; font-weight: 700; border-bottom: 1px solid #e7e5e4; white-space: pre-wrap; }
+        
+        .btn-container { display: flex; gap: 1.25rem; margin-top: 2.5rem; }
+        .btn { flex: 1; padding: 1rem 0; border-radius: 0.75rem; font-weight: 700; font-size: 1.1rem; text-decoration: none; transition: all 0.2s; box-sizing: border-box; text-align: center; cursor: pointer; border: none; }
+        
+        .btn-primary { background-color: #059669; color: white; box-shadow: 0 4px 6px -1px rgba(6, 150, 105, 0.2); }
+        .btn-primary:hover { background-color: #047857; }
+        .btn-secondary { background-color: #e7e5e4; color: #44403c; border: 1px solid #d6d3d1; }
+        .btn-secondary:hover { background-color: #d6d3d1; }
+        
+        .hidden { display: none !important; }
+        .error-msg { color: #b91c1c; font-size: 0.95rem; font-weight: 700; margin-top: 0.5rem; text-align: center; }
+        footer { background-color: #1c1917; color: #a8a29e; padding: 2rem 0; text-align: center; font-size: 0.75rem; border-top: 1px solid #292524; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <h1>ウェルネスの森を守る会</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="card">
+            <!-- 📅 画面1：イベント選択画面 -->
+            <div id="step-select">
+                <h2>📅 出欠を登録するイベントを選択</h2>
+                <ul id="event-list-container" class="event-list">
+                    <li style="text-align:center; color:#78716c;">イベントを読み込み中...</li>
+                </ul>
+                <div class="btn-container" style="margin-top: 2rem;">
+                    <a href="member.html" class="btn btn-secondary">↩️ メニューに戻る</a>
+                </div>
+            </div>
+
+            <!-- ✍️ 画面2：出欠入力画面 -->
+            <div id="step-input" class="hidden">
+                <h2>✍️ 出欠の入力</h2>
+                
+                <!-- 💡 選択されたイベントの詳細をカード形式で表示（地図を除外してシンプルに） -->
+                <div class="selected-event-box">
+                    <div class="event-detail-header">選択中の行事詳細</div>
+                    <div id="disp-event-datetime" class="event-detail-item"></div>
+                    <div id="disp-event-content" class="event-detail-content"></div>
+                    <div id="disp-event-place" class="event-detail-item"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="member-name">お名前</label>
+                    <input type="text" id="member-name" placeholder="例：山田 太郎" autocomplete="name">
+                    <div id="name-error" class="error-msg"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">出欠の選択</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="attendance" value="出">参加</label>
+                        <label class="radio-label"><input type="radio" name="attendance" value="欠">不参加</label>
+                        <label class="radio-label"><input type="radio" name="attendance" value="未">未定</label>
+                    </div>
+                    <div id="status-error" class="error-msg"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="member-comment">コメント（遅刻・連絡事項など）</label>
+                    <textarea id="member-comment" rows="3" placeholder="何かあればご記入ください"></textarea>
+                </div>
+                
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" onclick="backToSelect()">↩️ イベントを選び直す</button>
+                    <button type="button" class="btn btn-primary" onclick="goToConfirm()">確認する</button>
+                </div>
+            </div>
+
+            <!-- 🔍 画面3：確認画面 -->
+            <div id="step-confirm" class="hidden">
+                <h2>🔍 入力内容の確認</h2>
+                <p style="text-align: center; color: #57534e; margin-bottom: 1.5rem;">内容に間違いがなければ「登録する」を押してください。</p>
+                
+                <table class="confirm-table">
+                    <tr><th>対象行事</th><td id="conf-event"></td></tr>
+                    <tr><th>お名前</th><td id="conf-name"></td></tr>
+                    <tr><th>出欠</th><td id="conf-status"></td></tr>
+                    <tr><th>コメント</th><td id="conf-comment"></td></tr>
+                </table>
+                
+                <div id="submit-error" class="error-msg"></div>
+
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" id="btn-edit" onclick="backToInput()">訂正する</button>
+                    <button type="button" class="btn btn-primary" id="btn-submit" onclick="submitData()">登録する</button>
+                </div>
+            </div>
+
+            <!-- 🎉 画面4：完了画面 -->
+            <div id="step-complete" class="hidden" style="text-align: center;">
+                <div style="font-size: 3.5rem; margin-bottom: 1rem;">✅</div>
+                <h2>登録が完了しました</h2>
+                <p style="color: #57534e; line-height: 1.6; margin-bottom: 2.5rem;">ご協力ありがとうございました。<br>出欠内容は正常に記録されました。</p>
+                <a href="member.html" class="btn btn-primary" style="display: inline-block; width: auto; padding: 0.85rem 2.5rem;">メニューへ戻る</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const ACTIVITY_CSV_URL = "activity.csv";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxz8vV0Ydkb9KZlt07mlrrFs4QEuSKOSimmAu62Cf7Kdjapuih0nu6NHGAD6XNIT_l8/exec"; // ★1行で正しく貼り付けてください
+
+        // 選択された行事の情報を保持する変数
+        let currentEvent = {
+            date: "",
+            time: "",
+            content: "",
+            place: ""
+        };
+
+        // 🛡️ 未認証の場合は自動でログイン画面へ弾く
+        if (sessionStorage.getItem("isMemberAuthenticated") !== "true") {
+            window.location.href = "member.html";
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            fetch(ACTIVITY_CSV_URL + "?t=" + new Date().getTime())
+            .then(res => {
+                if (!res.ok) throw new Error("HTTPエラー: " + res.status);
+                return res.text();
+            })
+            .then(csvText => {
+                parseAndListActivities(csvText);
+            })
+            .catch(err => {
+                document.getElementById("event-list-container").innerHTML = 
+                    `<li style="text-align:center; color:#b91c1c; font-weight:700;">イベントの読み込みに失敗しました。</li>`;
+            });
+        });
+
+        function parseToYMDNumber(str) {
+            if (!str) return null;
+            const nums = str.match(/\d+/g);
+            if (!nums || nums.length < 3) return null;
+            const y = nums[0];
+            const m = nums[1].padStart(2, '0');
+            const d = nums[2].padStart(2, '0');
+            return parseInt(`${y}${m}${d}`, 10);
+        }
+
+        function parseAndListActivities(csvText) {
+            const container = document.getElementById("event-list-container");
+            container.innerHTML = "";
+
+            const now = new Date();
+            const todayYMD = parseInt(
+                now.getFullYear().toString() + 
+                (now.getMonth() + 1).toString().padStart(2, '0') + 
+                now.getDate().toString().padStart(2, '0'), 
+                10
+            );
+
+            const lines = csvText.replace(/^\uFEFF/, "").split(/\r?\n/);
+            let hasEvent = false;
+
+            lines.forEach(line => {
+                if (!line.trim()) return;
+                
+                const parts = line.split(",").map(item => item.trim());
+                if (parts.length >= 3) {
+                    const dateStr = parts[0] || "";
+                    const timeStr = parts[1] || "";
+                    const content = parts[2] || "";
+                    const place   = parts[3] || "";
+
+                    if (dateStr && content) {
+                        const eventYMD = parseToYMDNumber(dateStr);
+
+                        if (eventYMD !== null && eventYMD >= todayYMD) {
+                            hasEvent = true;
+                            const li = document.createElement("li");
+                            li.className = "event-item";
+                            
+                            const a = document.createElement("a");
+                            a.className = "event-link";
+                            // 一覧画面での表示（日付 時間 ➔ 内容）
+                            a.innerText = `${dateStr} ${timeStr} ➔ ${content}`;
+                            
+                            // クリック時に選択情報を渡す
+                            a.onclick = () => selectEvent(dateStr, timeStr, content, place);
+                            
+                            li.appendChild(a);
+                            container.appendChild(li);
+                        }
+                    }
+                }
+            });
+
+            if (!hasEvent) {
+                container.innerHTML = `<li style="text-align:center; color:#78716c;">現在、案内中の予定イベントはありません。</li>`;
+            }
+        }
+
+        // 💡 選択したイベントを出欠入力画面にセット
+        function selectEvent(date, time, content, place) {
+            currentEvent = { date, time, content, place };
+
+            // 日時
+            const timeInfo = time ? ` ${time}` : "";
+            document.getElementById("disp-event-datetime").innerHTML = `📅 <strong>日時：</strong> ${date}${timeInfo}`;
+            
+            // 内容
+            document.getElementById("disp-event-content").innerText = `📌 ${content}`;
+            
+            // 集合場所（設定されている場合のみ表示）
+            const placeDiv = document.getElementById("disp-event-place");
+            if (place) {
+                placeDiv.innerHTML = `📍 <strong>集合場所：</strong> ${place}`;
+                placeDiv.classList.remove("hidden");
+            } else {
+                placeDiv.innerHTML = "";
+                placeDiv.classList.add("hidden");
+            }
+
+            document.getElementById("step-select").classList.add("hidden");
+            document.getElementById("step-input").classList.remove("hidden");
+        }
+
+        function backToSelect() {
+            document.getElementById("step-input").classList.add("hidden");
+            document.getElementById("step-select").classList.remove("hidden");
+        }
+
+        function goToConfirm() {
+            const nameInput = document.getElementById("member-name");
+            let name = nameInput.value.trim();
+            name = name.replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+            nameInput.value = name;
+
+            const radio = document.querySelector('input[name="attendance"]:checked');
+            
+            let hasError = false;
+            if (!name) {
+                document.getElementById("name-error").innerText = "お名前を入力してください。";
+                hasError = true;
+            } else {
+                document.getElementById("name-error").innerText = "";
+            }
+
+            if (!radio) {
+                document.getElementById("status-error").innerText = "出欠を選択してください。";
+                hasError = true;
+            } else {
+                document.getElementById("status-error").innerText = "";
+            }
+
+            if (hasError) return;
+
+            // 確認画面への表示セット
+            const timeInfo = currentEvent.time ? ` ${currentEvent.time}` : "";
+            document.getElementById("conf-event").innerText = `${currentEvent.date}${timeInfo} ${currentEvent.content}`;
+            document.getElementById("conf-name").innerText = name;
+            
+            let statusText = "参加";
+            if (radio.value === "欠") statusText = "不参加";
+            if (radio.value === "未") statusText = "未定";
+            document.getElementById("conf-status").innerText = statusText;
+            
+            const comment = document.getElementById("member-comment").value.trim();
+            document.getElementById("conf-comment").innerText = comment ? comment : "（なし）";
+
+            document.getElementById("step-input").classList.add("hidden");
+            document.getElementById("step-confirm").classList.remove("hidden");
+        }
+
+        function backToInput() {
+            document.getElementById("step-confirm").classList.add("hidden");
+            document.getElementById("step-input").classList.remove("hidden");
+        }
+
+        function submitData() {
+            const name = document.getElementById("member-name").value.trim();
+            const status = document.querySelector('input[name="attendance"]:checked').value;
+            const comment = document.getElementById("member-comment").value.trim();
+            
+            const submitError = document.getElementById("submit-error");
+            const btnSubmit = document.getElementById("btn-submit");
+            const btnEdit = document.getElementById("btn-edit");
+
+            btnSubmit.disabled = true;
+            btnEdit.disabled = true;
+            submitError.style.color = "#059669";
+            submitError.innerText = "データを送信中...";
+
+            const payload = {
+                date: currentEvent.date,
+                content: currentEvent.content,
+                name: name,
+                status: status,
+                comment: comment
+            };
+
+            fetch(GAS_WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                submitError.innerText = "";
+                document.getElementById("step-confirm").classList.add("hidden");
+                document.getElementById("step-complete").classList.remove("hidden");
+            })
+            .catch(err => {
+                submitError.style.color = "#b91c1c";
+                submitError.innerText = "送信中にエラーが発生しました。";
+                btnSubmit.disabled = false;
+                btnEdit.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>

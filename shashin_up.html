@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像のアップロード - ウェルネスの森を守る会</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; background-color: #f9f8f6; color: #292524; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+        header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(231, 229, 228, 0.6); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.1em; color: #065f46; margin: 0; }
+        
+        main { max-width: 600px; margin: 0 auto; padding: 3rem 1.15rem; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        .card { background-color: white; border-radius: 1.5rem; padding: 2.5rem 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02); border: 1px solid #e7e5e4; }
+        h2 { font-size: 1.35rem; font-weight: 700; color: #1c1917; margin: 0 0 1.5rem 0; line-height: 1.5; text-align: center; }
+        
+        .form-group { margin-bottom: 1.75rem; text-align: left; }
+        .form-label { display: block; font-weight: 700; margin-bottom: 0.5rem; color: #44403c; font-size: 1rem; }
+        
+        input[type="text"], select, input[type="file"] { width: 100%; padding: 0.85rem 1rem; font-size: 1.05rem; border: 1px solid #d6d3d1; border-radius: 0.75rem; background-color: #fafaf9; box-sizing: border-box; color: #1c1917; font-family: inherit; }
+        input[type="text"]:focus, select:focus, input[type="file"]:focus { border-color: #059669; background-color: white; outline: none; box-shadow: 0 0 0 3px rgba(6, 150, 105, 0.1); }
+        input[type="file"] { padding: 0.6rem 0.8rem; background-color: #f5f5f4; cursor: pointer; }
+        
+        .btn-container { display: flex; gap: 1.25rem; margin-top: 2.5rem; }
+        .btn { flex: 1; padding: 1rem 0; border-radius: 0.75rem; font-weight: 700; font-size: 1.1rem; text-decoration: none; transition: all 0.2s; box-sizing: border-box; text-align: center; cursor: pointer; border: none; }
+        
+        .btn-primary { background-color: #059669; color: white; box-shadow: 0 4px 6px -1px rgba(6, 150, 105, 0.2); }
+        .btn-primary:hover { background-color: #047857; }
+        .btn-secondary { background-color: #e7e5e4; color: #44403c; border: 1px solid #d6d3d1; }
+        .btn-secondary:hover { background-color: #d6d3d1; }
+        
+        .status-msg { text-align: center; font-weight: 700; margin-top: 1.5rem; white-space: pre-wrap; font-size: 1rem; line-height: 1.6; }
+        .success { color: #059669; }
+        .error { color: #b91c1c; }
+        
+        footer { background-color: #1c1917; color: #a8a29e; padding: 2rem 0; text-align: center; font-size: 0.75rem; border-top: 1px solid #292524; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <h1>ウェルネスの森を守る会</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="card">
+            <h2>📸 画像のアップロード</h2>
+            
+            <!-- 📅 過去イベントの選択 -->
+            <div class="form-group">
+                <label class="form-label" for="event-select">対象の活動イベント（過去6件）</label>
+                <select id="event-select">
+                    <option value="">読み込み中...</option>
+                </select>
+            </div>
+
+            <!-- 👥 撮影者・投稿者の名前入力 -->
+            <div class="form-group">
+                <label class="form-label" for="uploader-name">お名前（ニックネーム可）</label>
+                <input type="text" id="uploader-name" placeholder="例：山田 太郎">
+            </div>
+
+            <!-- 🖼️ 写真ファイルの選択 -->
+            <div class="form-group">
+                <label class="form-label" for="file-input">写真を選択（1枚ずつ送信）</label>
+                <input type="file" id="file-input" accept="image/*">
+            </div>
+
+            <!-- 送信ボタン -->
+            <button type="button" class="btn btn-primary" id="btn-upload" style="width: 100%; margin-top: 1rem;" onclick="uploadPhoto()">写真を送信する</button>
+            
+            <div id="status-area" class="status-msg"></div>
+
+            <div class="btn-container">
+                <a href="member.html" class="btn btn-secondary">↩️ メニューに戻る</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const ACTIVITY_CSV_URL = "activity.csv";
+        const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxz8vV0Ydkb9KZlt07mlrrFs4QEuSKOSimmAu62Cf7Kdjapuih0nu6NHGAD6XNIT_l8/exec"; // ★ご自身のGAS URLに差し替えてください
+
+        // 🛡️ 横入り（未認証アクセス）の自動ブロック機能
+        if (sessionStorage.getItem("isMemberAuthenticated") !== "true") {
+            window.location.href = "member.html";
+        }
+
+        // 日付文字列（YYYY/MM/DD等）を数値(YYYYMMDD)に変換する関数
+        function parseToYMDNumber(str) {
+            if (!str) return null;
+            const nums = str.match(/\d+/g);
+            if (!nums || nums.length < 3) return null;
+            return parseInt(`${nums[0]}${nums[1].padStart(2, '0')}${nums[2].padStart(2, '0')}`, 10);
+        }
+
+        // 📅 CSVから「今日より過去の直近6イベント」を読み込んでセットする処理
+        window.addEventListener("DOMContentLoaded", () => {
+            fetch(ACTIVITY_CSV_URL + "?t=" + new Date().getTime())
+            .then(res => res.text())
+            .then(csvText => {
+                setupPastEventOptions(csvText);
+            })
+            .catch(err => {
+                const select = document.getElementById("event-select");
+                select.innerHTML = '<option value="">イベントの読み込みに失敗しました</option>';
+            });
+        });
+
+        function setupPastEventOptions(csvText) {
+            const select = document.getElementById("event-select");
+            select.innerHTML = "";
+
+            const now = new Date();
+            const todayYMD = parseInt(
+                now.getFullYear().toString() + 
+                (now.getMonth() + 1).toString().padStart(2, '0') + 
+                now.getDate().toString().padStart(2, '0'), 
+                10
+            );
+
+            const lines = csvText.replace(/^\uFEFF/, "").split(/\r?\n/);
+            const pastEvents = [];
+
+            lines.forEach(line => {
+                if (!line.trim()) return;
+                const parts = line.split(",").map(item => item.trim());
+                if (parts.length >= 3) {
+                    const dateStr = parts[0];
+                    const timeStr = parts[1];
+                    const content = parts[2];
+                    const eventYMD = parseToYMDNumber(dateStr);
+
+                    // システム日付より古い（過去の）イベントを抽出
+                    if (eventYMD !== null && eventYMD < todayYMD) {
+                        const nums = dateStr.match(/\d+/g);
+                        const yearMonth = `${nums[0]}${nums[1].padStart(2, '0')}`; // 例: "202605"
+                        
+                        pastEvents.push({
+                            ymd: eventYMD,
+                            folder: yearMonth,
+                            content: content, // イベント名
+                            display: `${dateStr} ${content}`
+                        });
+                    }
+                }
+            });
+
+            // 日付が新しい順（降順）にソート
+            pastEvents.sort((a, b) => b.ymd - a.ymd);
+
+            // 直近の最大6件を取得
+            const recent6 = pastEvents.slice(0, 6);
+
+            if (recent6.length === 0) {
+                select.innerHTML = '<option value="">過去の活動イベントはありません</option>';
+                return;
+            }
+
+            recent6.forEach(ev => {
+                const option = document.createElement("option");
+                option.value = ev.folder; // 例: "202605"
+                option.dataset.content = ev.content; // イベント名をデータ属性に保持
+                option.text = ev.display;  // 表示: 2026/05/10 夏祭り準備
+                select.appendChild(option);
+            });
+        }
+
+function uploadPhoto() {
+            const select = document.getElementById("event-select");
+            const selectedOption = select.options[select.selectedIndex];
+            const yearMonth = select.value;
+            const eventContent = selectedOption ? selectedOption.dataset.content : "";
+            const uploaderName = document.getElementById("uploader-name").value.trim();
+            const fileInput = document.getElementById("file-input");
+            const statusArea = document.getElementById("status-area");
+            const btnUpload = document.getElementById("btn-upload");
+
+            // 1. バリデーションチェック
+            if (!yearMonth || !eventContent) {
+                statusArea.className = "status-msg error";
+                statusArea.innerText = "対象のイベントを選択してください。";
+                return;
+            }
+            if (!uploaderName) {
+                statusArea.className = "status-msg error";
+                statusArea.innerText = "お名前を入力してください。";
+                return;
+            }
+            if (fileInput.files.length === 0) {
+                statusArea.className = "status-msg error";
+                statusArea.innerText = "写真ファイルを選択してください。";
+                return;
+            }
+
+            const file = fileInput.files[0];
+            btnUpload.disabled = true;
+            statusArea.className = "status-msg";
+            statusArea.style.color = "#44403c";
+            statusArea.innerText = "写真を送信用に変換しています...\n（大きな画像は少し時間がかかります）";
+
+            // 記号類の除去
+            const cleanEvent = eventContent.replace(/[,/_\s]/g, "");
+            const cleanUploader = uploaderName.replace(/[,/_\s]/g, "");
+
+            // ファイル名の整形
+            const lastDotIndex = file.name.lastIndexOf(".");
+            const originalName = lastDotIndex !== -1 ? file.name.substring(0, lastDotIndex) : file.name;
+            const extension = lastDotIndex !== -1 ? file.name.substring(lastDotIndex) : "";
+            const cleanOriginalName = originalName.replace(/[,/_\s]/g, "-");
+
+            const newFileName = `${cleanEvent}_${cleanOriginalName}_${cleanUploader}${extension}`;
+
+            console.log("🚀 [TRACE 1] 送信準備完了:", { yearMonth, newFileName, mimeType: file.type });
+
+            const reader = new FileReader();
+            
+            reader.onerror = function(err) {
+                btnUpload.disabled = false;
+                statusArea.className = "status-msg error";
+                statusArea.innerText = "ファイルの読み込みに失敗しました。";
+                console.error("❌ [TRACE ERROR] FileReader error:", err);
+            };
+
+            reader.onload = function(e) {
+                const base64Data = e.target.result.split(",")[1];
+                statusArea.innerText = "Googleへ送信中...";
+
+                const payload = {
+                    action: "upload",
+                    folder: yearMonth,      // GAS側で「XXXX年X月の活動」フォルダ判定用
+                    filename: newFileName,   // リネーム済みのファイル名
+                    mimeType: file.type,
+                    data: base64Data
+                };
+
+                console.log("📡 [TRACE 2] GASへリクエストを送信します。URL:", GAS_WEBAPP_URL);
+
+                // 🎯 text() で受け取ってから JSON 解析することで CORS やレスポンスエラーを詳細検知
+                fetch(GAS_WEBAPP_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8" // GASのCORSプレフライト回避用
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => {
+                    console.log("📩 [TRACE 3] レスポンス受信ステータス:", response.status);
+                    return response.text();
+                })
+                .then(text => {
+                    console.log("📄 [TRACE 4] 受信生データ:", text);
+                    btnUpload.disabled = false;
+
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                    } catch (parseError) {
+                        throw new Error("サーバーからの返答がJSON形式ではありませんでした: " + text);
+                    }
+
+                    if (data.success) {
+                        statusArea.className = "status-msg success";
+                        statusArea.innerText = "写真の送信が完了しました！\n（約5分後にアルバムに反映されます）";
+                        fileInput.value = "";
+                        document.getElementById("uploader-name").value = "";
+                        console.log("✅ [TRACE SUCCESS] 保存完了 File ID:", data.fileId);
+                    } else {
+                        statusArea.className = "status-msg error";
+                        const detailMsg = data.error || data.message || JSON.stringify(data);
+                        const errorMsg = data.error || data.message || "詳細不明のエラー";
+                        statusArea.innerText = "送信に失敗しました。\n理由: " + errorMsg;
+                        console.error("❌ [TRACE FAILED] GAS返却エラー:", errorMsg);
+                    }
+                })
+                .catch(error => {
+                    btnUpload.disabled = false;
+                    statusArea.className = "status-msg error";
+                    statusArea.innerText = "通信エラーが発生しました。\n" + error.message;
+                    console.error("❌ [TRACE CATCH ERROR]:", error);
+                });
+            };
+
+            reader.readAsDataURL(file);
+        }    </script>
+</body>
+</html>
