@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
 
-    <!-- 🖼️ タブアイコン（透明化された logo.png を使用） -->
-    <link rel="icon" href="logo.png" type="image/png">
-    <link rel="apple-touch-icon" href="logo.png">
+    <!-- 🖼️ タブアイコン（キャッシュを強制破棄して透明化を即時反映させる指定） -->
+    <link rel="icon" href="logo.png?v=2" type="image/png">
+    <link rel="apple-touch-icon" href="logo.png?v=2">
 
     <title>ウェルネスの森を守る会 | 入口</title>
     <link rel="preconnect" href="https://googleapis.com">
@@ -31,23 +31,25 @@
         }
         .container { text-align: center; max-width: 400px; width: 100%; }
         
-        /* 📸 ロゴリンクエリア（白浮き防止・シンプルな拡大効果） */
+        /* 📸 ロゴリンクエリア */
         .logo-link { 
             display: inline-block; 
             text-decoration: none; 
-            transition: transform 0.2s ease; 
+            transition: transform 0.2s ease, opacity 0.2s ease; 
             cursor: pointer; 
-            background: transparent !important;
-            outline: none;
+            background: none !important;
+            border: none !important;
+            outline: none !important;
         }
         .logo-link:hover { 
-            transform: scale(1.04); 
+            transform: scale(1.03); 
+            opacity: 0.9;
         }
         .logo-link:active { 
             transform: scale(0.98); 
         }
 
-        /* 💡 白背景を画面色(#f9f8f6)と同化させて透過表示するエリア */
+        /* 📸 ロゴ表示エリア */
         .logo-container { 
             width: 240px; 
             height: 240px; 
@@ -56,18 +58,16 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            background: transparent !important;
+            background: none !important;
         }
         .logo-img { 
             width: 100%; 
             height: 100%; 
             object-fit: contain; 
             display: block; 
-            border: none; 
-            outline: none; 
-            background: transparent !important;
-            /* 乗算処理で画像の白背景のみを透過 */
-            mix-blend-mode: multiply; 
+            border: none !important; 
+            outline: none !important; 
+            background: none !important;
         }
         
         /* 📝 案内コメント用スタイル */
@@ -83,10 +83,10 @@
 <body>
 
     <div class="container">
-        <!-- 📸 ロゴ本体は元の logo.jpg を高画質のまま使用 -->
+        <!-- 📸 本体にも透明PNG画像を使用 -->
         <a href="top.html" class="logo-link" title="トップページへ移動">
             <div class="logo-container">
-                <img src="logo.jpg" alt="ウェルネスの森を守る会 ロゴマーク" class="logo-img" onerror="this.parentElement.style.display='none';">
+                <img src="logo.png?v=2" alt="ウェルネスの森を守る会 ロゴマーク" class="logo-img" onerror="this.parentElement.style.display='none';">
             </div>
         </a>
 
