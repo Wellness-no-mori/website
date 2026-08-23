@@ -96,8 +96,8 @@
         <p>&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
     </footer>
 
-    <script>
-        const PASSWORD_FILE_URL = "/senyou.csv";
+    <script>        
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwLc4thC10_of4OEy2v2RffE6dGfBkvoInztN82bqjtPfXLiPER35GzkTuaq7a9N5gL/exec";
 
         window.addEventListener("DOMContentLoaded", () => {
             // 既に認証済みの場合のみメニューを表示
@@ -151,46 +151,58 @@
             }).replace(/ /g, " ");
         }
 
-        function checkPassword() {
-            const pwInput = document.getElementById("pw-input");
-            let userInput = pwInput.value.trim();
-            userInput = hankakuConvert(userInput);
-            
-            const errorArea = document.getElementById("error-area");
-            
-            if (!userInput) {
-                errorArea.innerText = "パスワードを入力してください。";
-                errorArea.style.color = "#b91c1c";
-                return;
-            }
+// ★1. 定数をGASのURLに変更（先頭部分などで定義）
 
-            errorArea.innerText = "認証中...";
-            errorArea.style.color = "#059669";
+// ★2. checkPassword関数を更新
+function checkPassword() {
+    const pwInput = document.getElementById("pw-input");
+    let userInput = pwInput.value.trim();
+    userInput = hankakuConvert(userInput);
+    
+    const errorArea = document.getElementById("error-area");
+    
+    if (!userInput) {
+        errorArea.innerText = "パスワードを入力してください。";
+        errorArea.style.color = "#b91c1c";
+        return;
+    }
 
-            fetch(PASSWORD_FILE_URL)
-            .then(response => {
-                if (!response.ok) throw new Error();
-                return response.text();
-            })
-            .then(csvText => {
-                const correctPassword = csvText.replace(/^\uFEFF/, "").replace(/[\r\n]/g, "").trim();
+    errorArea.innerText = "認証中...";
+    errorArea.style.color = "#059669";
 
-                if (userInput === correctPassword) {
-                    errorArea.innerText = "";
-                    sessionStorage.setItem("isMemberAuthenticated", "true");
+    // GAS（code）へ判定リクエストを送信
+    fetch(GAS_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "text/plain" // GASのdoPostでパースしやすいよう指定
+        },
+        body: JSON.stringify({
+            action: "checkPassword",
+            password: userInput
+        })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("ネットワークエラー");
+        return response.json();
+    })
+    .then(data => {
+        // GAS側から { matched: true } が返ってきたか判定
+        if (data && data.matched === true) {
+            errorArea.innerText = "";
+            sessionStorage.setItem("isMemberAuthenticated", "true");
 
-                    document.getElementById("auth-section").classList.add("hidden");
-                    document.getElementById("menu-section").classList.remove("hidden");
-                } else {
-                    errorArea.innerHTML = "パスワードが違います。<br>最新のパスワードは世話人から貰ってください。";
-                    errorArea.style.color = "#b91c1c";
-                }
-            })
-            .catch(error => {
-                errorArea.innerHTML = "認証エラーが発生しました。<br>最新のパスワードは世話人から貰ってください。";
-                errorArea.style.color = "#b91c1c";
-            });
+            document.getElementById("auth-section").classList.add("hidden");
+            document.getElementById("menu-section").classList.remove("hidden");
+        } else {
+            errorArea.innerHTML = "パスワードが違います。<br>最新のパスワードは世話人から貰ってください。";
+            errorArea.style.color = "#b91c1c";
         }
-    </script>
+    })
+    .catch(error => {
+        console.error(error);
+        errorArea.innerHTML = "認証エラーが発生しました。<br>最新のパスワードは世話人から貰ってください。";
+        errorArea.style.color = "#b91c1c";
+    });
+}    </script>
 </body>
 </html>
