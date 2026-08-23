@@ -1,10 +1,4 @@
 {
-  "routes": [
-    {
-      "src": "/(.*)senyou\\.csv$",
-      "status": 404
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
