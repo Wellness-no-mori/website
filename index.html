@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
 
-    <!-- 🖼️ ブラウザタブ＆お気に入り（ホーム画面追加）用アイコン指定 -->
-    <link rel="icon" href="logo.jpg" type="image/jpeg">
-    <link rel="apple-touch-icon" href="logo.jpg">
-    <meta name="mobile-web-app-capable" content="yes">
+    <!-- 🖼️ タブアイコン（透明化された logo.png を使用） -->
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="logo.png">
 
     <title>ウェルネスの森を守る会 | 入口</title>
     <link rel="preconnect" href="https://googleapis.com">
@@ -32,19 +31,23 @@
         }
         .container { text-align: center; max-width: 400px; width: 100%; }
         
-        /* 📸 ロゴリンクエリア */
+        /* 📸 ロゴリンクエリア（白浮き防止・シンプルな拡大効果） */
         .logo-link { 
             display: inline-block; 
             text-decoration: none; 
-            transition: transform 0.2s ease, opacity 0.2s ease; 
+            transition: transform 0.2s ease; 
             cursor: pointer; 
-            /* 👇 透過ブレンドを画面の背景に完全に繋げる設定 */
-            isolation: auto;
+            background: transparent !important;
+            outline: none;
         }
-        .logo-link:hover { transform: scale(1.03); opacity: 0.9; }
-        .logo-link:active { transform: scale(0.98); }
+        .logo-link:hover { 
+            transform: scale(1.04); 
+        }
+        .logo-link:active { 
+            transform: scale(0.98); 
+        }
 
-        /* 💡 HTML側で白い背景のみを消し、背景色(#f9f8f6)に透過表示させる指定 */
+        /* 💡 白背景を画面色(#f9f8f6)と同化させて透過表示するエリア */
         .logo-container { 
             width: 240px; 
             height: 240px; 
@@ -53,7 +56,7 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            background-color: transparent;
+            background: transparent !important;
         }
         .logo-img { 
             width: 100%; 
@@ -62,18 +65,25 @@
             display: block; 
             border: none; 
             outline: none; 
-            /* 👇 画像の白背景だけを消して綺麗に透過するプロパティ */
+            background: transparent !important;
+            /* 乗算処理で画像の白背景のみを透過 */
             mix-blend-mode: multiply; 
         }
         
         /* 📝 案内コメント用スタイル */
-        .guide-text { margin-top: 1.5rem; font-size: 0.95rem; color: #57534e; font-weight: 500; letter-spacing: 0.05em; }
+        .guide-text { 
+            margin-top: 1.5rem; 
+            font-size: 0.95rem; 
+            color: #57534e; 
+            font-weight: 500; 
+            letter-spacing: 0.05em; 
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- 📸 ロゴ自体を top.html へのリンクに変更 -->
+        <!-- 📸 ロゴ本体は元の logo.jpg を高画質のまま使用 -->
         <a href="top.html" class="logo-link" title="トップページへ移動">
             <div class="logo-container">
                 <img src="logo.jpg" alt="ウェルネスの森を守る会 ロゴマーク" class="logo-img" onerror="this.parentElement.style.display='none';">
