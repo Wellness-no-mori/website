@@ -16,56 +16,68 @@
     <style>
         body { font-family: 'Noto Sans JP', sans-serif; background-color: #f9f8f6; color: #292524; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; -webkit-font-smoothing: antialiased; }
         header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(231, 229, 228, 0.6); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; position: relative; }
+        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
         h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.05em; color: #065f46; margin: 0; white-space: nowrap; }
         
-        /* ① 共通 3本線ハンバーガーボタン */
-        .menu-toggle { 
-            background: none; 
-            border: none; 
-            font-size: 1.75rem; 
-            color: #065f46; 
-            cursor: pointer; 
-            padding: 0.25rem 0.5rem; 
-            line-height: 1; 
+        /* ① 右上 プルダウンメニュー形式 */
+        .nav-select {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #065f46;
+            background-color: #f0fdf4;
+            border: 1px solid #a7f3d0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            outline: none;
         }
-
-        /* 共通 ドロップダウンメニュー */
-        nav {
-            display: none;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            right: 1.5rem;
-            width: 220px;
-            background-color: white;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e7e5e4;
-            gap: 0.75rem;
-            z-index: 100;
-        }
-        nav.open { display: flex; }
-        .nav-link { color: #44403c; text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 0.5rem 0.75rem; border-radius: 0.5rem; transition: background-color 0.2s; }
-        .nav-link:hover { background-color: #f5f5f4; color: #047857; }
-        .logout-menu-btn { color: #dc2626; border-top: 1px solid #f5f5f4; padding-top: 0.75rem; margin-top: 0.25rem; }
-        .logout-menu-btn:hover { background-color: #fef2f2; color: #b91c1c; }
+        .nav-select:hover { background-color: #dcfce7; }
 
         main { max-width: 896px; margin: 0 auto; padding: 2.5rem 1.5rem 3rem 1.5rem; width: 100%; box-sizing: border-box; }
         h2 { font-size: 1.6rem; font-weight: 700; color: #1c1917; margin: 0 0 2rem 0; text-align: center; }
 
-        /* お知らせリスト */
-        .news-list { display: flex; flex-direction: column; gap: 1.25rem; }
-        .news-card { background-color: white; border-radius: 1rem; padding: 1.5rem; border: 1px solid #e7e5e4; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
-        .news-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
-        .news-date { font-size: 0.85rem; color: #78716c; font-weight: 500; }
+        /* お知らせブロック（画面中央配置、カード内テキストは左寄せ） */
+        .news-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 1.25rem; 
+            max-width: 680px; 
+            margin: 0 auto; 
+        }
+        .news-card { 
+            background-color: white; 
+            border-radius: 1rem; 
+            padding: 1.5rem; 
+            border: 1px solid #e7e5e4; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03); 
+            text-align: left; 
+        }
+        .news-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            margin-bottom: 0.75rem; 
+        }
+        .news-date { 
+            font-size: 0.9rem; 
+            color: #78716c; 
+            font-weight: 700; 
+        }
         
-        /* ③ 7日以内の「NEW」バッジ */
-        .badge-new { background-color: #ef4444; color: white; font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 9999px; display: inline-block; }
+        /* ③ 赤文字「NEW」表記 */
+        .badge-new-text { 
+            color: #ef4444; 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            letter-spacing: 0.05em; 
+        }
         
-        .news-title { font-size: 1.1rem; font-weight: 700; color: #1c1917; margin: 0 0 0.5rem 0; }
-        .news-body { font-size: 0.95rem; color: #44403c; line-height: 1.7; margin: 0; white-space: pre-wrap; }
+        .news-body { 
+            font-size: 0.95rem; 
+            color: #292524; 
+            line-height: 1.8; 
+            margin: 0; 
+        }
 
         /* ② 共通 フッター定義 */
         footer { 
@@ -112,23 +124,22 @@
     <header>
         <div class="nav-container">
             <h1>ウェルネスの森を守る会</h1>
-            <!-- ① 3本線メニューボタン -->
-            <button class="menu-toggle" id="menuToggle" aria-label="メニューを開く">☰</button>
-            <nav id="navMenu">
-                <!-- 自ページ（お知らせ）を除いたメニュー構成 -->
-                <a href="top.html" class="nav-link">メインページ</a>
-                <a href="schedule.html" class="nav-link">活動予定</a>
-                <a href="album.html" class="nav-link">アルバム</a>
-                <a href="member.html" class="nav-link">メンバー専用</a>
-                <a href="#" onclick="handleLogout(); return false;" class="nav-link logout-menu-btn">ログアウト</a>
-            </nav>
+            <!-- ① 右上 プルダウン選択メニュー -->
+            <select class="nav-select" onchange="handleNavChange(this)">
+                <option value="" selected disabled>☰ メニュー</option>
+                <option value="top.html">メインページ</option>
+                <option value="schedule.html">活動予定</option>
+                <option value="album.html">アルバム</option>
+                <option value="member.html">メンバー専用</option>
+                <option value="logout">ログアウト</option>
+            </select>
         </div>
     </header>
 
     <main>
         <h2>📢 お知らせ・新着情報</h2>
         <div id="newsContainer" class="news-list">
-            <!-- JavaScriptで sewa/news.csv を取得して描画 -->
+            <!-- JavaScriptで CSV を取得して描画 -->
         </div>
     </main>
 
@@ -143,20 +154,20 @@
     </footer>
 
     <script>
-        const INACTIVE_TIMEOUT = 10 * 60 * 1000; // 10分放置タイマー
+        const INACTIVE_TIMEOUT = 10 * 60 * 1000;
 
-        // ① メニューのトグル開閉
-        const menuToggle = document.getElementById('menuToggle');
-        const navMenu = document.getElementById('navMenu');
-        menuToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navMenu.classList.toggle('open');
-        });
-        document.addEventListener('click', () => {
-            navMenu.classList.remove('open');
-        });
+        // ① プルダウン遷移・ログアウト処理
+        function handleNavChange(selectObj) {
+            const value = selectObj.value;
+            if (!value) return;
 
-        // ログアウト処理
+            if (value === "logout") {
+                handleLogout();
+            } else {
+                window.location.href = value;
+            }
+        }
+
         function handleLogout() {
             localStorage.removeItem("authTimestamp");
             window.location.href = "index.html";
@@ -192,16 +203,26 @@
         checkAuthSession();
         setInterval(checkAuthSession, 60000);
 
-        // ③ news.csv の読み込みと 7日以内NEWマーク判定
+        // 「2026/08/22」等の文字列を「2026年8月22日」形式に変換する関数
+        function formatDateJapanese(dateStr) {
+            const parts = dateStr.replace(/\//g, '-').split('-');
+            if (parts.length === 3) {
+                return `${parts[0]}年${parseInt(parts[1], 10)}月${parseInt(parts[2], 10)}日`;
+            }
+            return dateStr;
+        }
+
+        // ③ news.csv 読み込み処理（中央配置・左寄せ・日付フォーマット・改行）
         async function loadNews() {
             const container = document.getElementById('newsContainer');
             try {
-                const response = await fetch('sewa/news.csv');
-                if (!response.ok) throw new Error('CSV読み込みエラー');
-                const text = await response.text();
+                const response = await fetch('sewa/news.csv?t=' + new Date().getTime());
+                if (!response.ok) throw new Error('HTTP Error: ' + response.status);
                 
-                const lines = text.trim().split('\n');
-                if (lines.length <= 1) {
+                const text = await response.text();
+                const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim().split('\n');
+                
+                if (lines.length === 0 || !lines[0].trim()) {
                     container.innerHTML = '<p style="text-align:center; color:#78716c;">現在お知らせはありません。</p>';
                     return;
                 }
@@ -209,40 +230,46 @@
                 const now = new Date();
                 let html = '';
 
-                // ヘッダー行を除いて1行ずつ処理 (新しい順を想定)
-                for (let i = 1; i < lines.length; i++) {
-                    const row = lines[i].split(',');
-                    if (row.length < 3) continue;
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    const parts = line.split(',');
+                    const dateRaw = parts[0] ? parts[0].replace(/"/g, '').trim() : '';
+                    if (!dateRaw) continue;
 
-                    const dateStr = row[0].trim(); // 例: "2026-08-20" または "2026/08/20"
-                    const title = row[1].trim();
-                    const body = row.slice(2).join(',').trim().replace(/^"(.*)"$/, '$1'); // カンマ含みの本文対応
+                    // 日付文字列を「2026年8月22日」形式に整形
+                    const dateFormatted = formatDateJapanese(dateRaw);
 
-                    // 日付の判定（システム日付との差が7日以内か）
-                    const newsDate = new Date(dateStr.replace(/\//g, '-'));
-                    const diffTime = now.getTime() - newsDate.getTime();
-                    const diffDays = diffTime / (1000 * 3600 * 24);
+                    // 第2項目以降を「<br>」で連結して改行表示
+                    const bodyParts = parts.slice(1).map(p => p.replace(/^"/, '').replace(/"$/, '').trim());
+                    const bodyHtml = bodyParts.join('<br>');
 
-                    // 7日以内（0日以上7日以下）ならNEWバッジを付与
-                    const isNew = (diffDays >= 0 && diffDays <= 7);
+                    // 7日以内NEW判定
+                    const newsDate = new Date(dateRaw.replace(/\//g, '-'));
+                    let isNew = false;
+                    if (!isNaN(newsDate.getTime())) {
+                        const diffTime = now.getTime() - newsDate.getTime();
+                        const diffDays = diffTime / (1000 * 3600 * 24);
+                        isNew = (diffDays >= 0 && diffDays <= 7);
+                    }
 
                     html += `
                         <article class="news-card">
                             <div class="news-header">
-                                <span class="news-date">${dateStr}</span>
-                                ${isNew ? '<span class="badge-new">NEW</span>' : ''}
+                                <span class="news-date">${dateFormatted}</span>
+                                ${isNew ? '<span class="badge-new-text">NEW</span>' : ''}
                             </div>
-                            <h3 class="news-title">${title}</h3>
-                            <p class="news-body">${body}</p>
+                            <div class="news-body">${bodyHtml}</div>
                         </article>
                     `;
                 }
 
-                container.innerHTML = html;
+                container.innerHTML = html || '<p style="text-align:center; color:#78716c;">現在お知らせはありません。</p>';
 
             } catch (error) {
                 console.error(error);
-                container.innerHTML = '<p style="text-align:center; color:#78716c;">お知らせの読み込みに失敗しました。</p>';
+                container.innerHTML = '<p style="text-align:center; color:#ef4444;">お知らせデータの読み込みに失敗しました。</p>';
             }
         }
 
