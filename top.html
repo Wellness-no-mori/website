@@ -69,12 +69,36 @@
         .btn-member { background-color: #059669; color: white; box-shadow: 0 10px 15px -3px rgba(6, 150, 105, 0.25); }
         .btn-member:hover { background-color: #047857; }
 
-        /* ② フッター定義 */
-        footer { background-color: #1c1917; color: #a8a29e; padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; border-top: 1px solid #292524; margin-top: 5rem; }
-        .footer-nav { margin-bottom: 1rem; }
-        .footer-link { color: #d6d3d1; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        /* ② フッター定義（版権：上段・中央 / リンク：下段・左寄せ・同デザイン） */
+        footer { 
+            background-color: #1c1917; 
+            padding: 2rem 1.5rem; 
+            border-top: 1px solid #292524; 
+            margin-top: 5rem; 
+        }
+        .footer-container { 
+            max-width: 896px; 
+            margin: 0 auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 0.75rem; 
+        }
+        .copyright { 
+            margin: 0; 
+            color: #78716c; 
+            font-size: 0.75rem; 
+            text-align: center; 
+        }
+        .footer-nav { 
+            text-align: left; 
+        }
+        .footer-link { 
+            color: #78716c; 
+            text-decoration: none; 
+            font-size: 0.75rem; 
+            transition: color 0.2s; 
+        }
         .footer-link:hover { color: #34d399; }
-        footer p { margin: 0; color: #78716c; font-size: 0.75rem; }
 
         /* ⑤ 📱 スマホ表示用メディアクエリ */
         @media (max-width: 640px) { 
@@ -118,11 +142,15 @@
     </main>
 
     <footer>
-        <!-- ② フッターに「私たちについて」リンク -->
-        <div class="footer-nav">
-            <a href="aboutus.html" class="footer-link">私たちについて</a>
+        <div class="footer-container">
+            <!-- 上の行：版権表明（中央寄せ） -->
+            <p class="copyright">&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
+            
+            <!-- 下の行：私たちについて（左寄せ・版権と同サイズ＆同色） -->
+            <div class="footer-nav">
+                <a href="aboutus.html" class="footer-link">私たちについて</a>
+            </div>
         </div>
-        <p>&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
     </footer>
 
     <script>
