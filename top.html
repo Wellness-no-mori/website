@@ -4,145 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
+
+    <!-- 全ページ共通 お気に入り・タブ用アイコン指定 -->
+    <link rel="icon" href="logo.png?v=2" type="image/png">
+    <link rel="apple-touch-icon" href="logo.png?v=2">
+
     <title>ウェルネスの森を守る会</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans JP', sans-serif; background-color: #f9f8f6; color: #292524; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; -webkit-font-smoothing: antialiased; }
-        header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-b: 1px solid rgba(231, 229, 228, 0.6); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(231, 229, 228, 0.6); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
         .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
-        h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.1em; color: #065f46; margin: 0; white-space: nowrap; }
+        h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.05em; color: #065f46; margin: 0; white-space: nowrap; }
         
-        nav { display: flex; align-items: center; gap: 2rem; }
-        .nav-link { color: #57534e; text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
-        .nav-link:hover { color: #047857; }
-        .member-btn { background-color: #047857; color: white; padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.875rem; font-weight: 500; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); transition: background-color 0.2s; }
-        .member-btn:hover { background-color: #065f46; }
+        /* ① 右上 ログアウトボタン */
+        .logout-btn { background-color: #78716c; color: white; padding: 0.4rem 1rem; border-radius: 0.5rem; text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: background-color 0.2s; white-space: nowrap; border: none; cursor: pointer; }
+        .logout-btn:hover { background-color: #57534e; }
 
-        main { max-width: 896px; margin: 0 auto; padding: 4rem 1.5rem 3rem 1.5rem; text-align: center; width: 100%; box-sizing: border-box; }
-        h2 { font-size: 1.75rem; font-weight: 700; color: #1c1917; margin: 0 0 1.5rem 0; line-height: 1.5; letter-spacing: -0.025em; }
-        .img-container { margin: 2.5rem auto; max-width: 768px; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
-        .main-img { width: 100%; height: auto; display: block; border-radius: 24px; border: none; }
+        main { max-width: 896px; margin: 0 auto; padding: 2.5rem 1.5rem 3rem 1.5rem; text-align: center; width: 100%; box-sizing: border-box; }
+        h2 { font-size: 1.6rem; font-weight: 700; color: #1c1917; margin: 0 0 1.5rem 0; line-height: 1.5; letter-spacing: -0.025em; }
         
-        /* ボタンエリア全体のコンテナ */
-        .action-buttons { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 1rem; 
+        .img-container { margin: 1.5rem auto 1.25rem auto; max-width: 768px; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.08); }
+        .main-img { width: 100%; height: auto; display: block; border-radius: 20px; border: none; }
+        
+        /* ④ 画像直下の説明文 */
+        .description { color: #57534e; max-width: 768px; margin: 0 auto 2.5rem auto; font-size: 0.95rem; line-height: 1.8; text-align: left; }
+
+        /* ⑤ 田の字（2列×2行）配置 */
+        .action-buttons-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 1.25rem; 
             max-width: 768px; 
-            margin: 0 auto 2.5rem auto; 
+            margin: 0 auto; 
         }
-        /* 共通ボタン基本スタイル */
-        .sub-btn { 
-            display: block; 
-            padding: 0.85rem 0; 
-            border-radius: 0.75rem; 
-            font-weight: 500; 
+        
+        .grid-btn { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 1.125rem 1rem; 
+            border-radius: 0.85rem; 
+            font-weight: 700; 
             font-size: 1rem; 
             text-decoration: none; 
             transition: all 0.2s; 
             box-sizing: border-box; 
             text-align: center; 
-            width: 100%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
-        /* お知らせボタン（上段・幅広：淡いニュアンスピンク） */
-        .btn-news { 
-            background-color: #f4ecee; 
-            color: #834e59; 
-            border: 1px solid #e8d5d8;
-            box-shadow: 0 2px 4px 0 rgba(131, 78, 89, 0.05); 
-        }
+        .grid-btn:hover { transform: translateY(-2px); }
+
+        .btn-news { background-color: #f4ecee; color: #834e59; border: 1px solid #e8d5d8; }
         .btn-news:hover { background-color: #ebdce0; }
-        /* 下段の2列並び用コンテナ */
-        .sub-buttons-row { 
-            display: flex; 
-            gap: 1rem; 
-            width: 100%; 
-        }
-        /* 活動予定・アルバムボタン（半幅） */
-        .sub-buttons-row .sub-btn { flex: 1; }
-        .btn-schedule { background-color: #115e59; color: white; box-shadow: 0 4px 6px -1px rgba(17, 94, 89, 0.2); }
+        
+        .btn-schedule { background-color: #115e59; color: white; }
         .btn-schedule:hover { background-color: #134e4a; }
+        
         .btn-album { background-color: #e7e5e4; color: #44403c; border: 1px solid #d6d3d1; }
         .btn-album:hover { background-color: #d6d3d1; }
 
-        /* 📱 スマホ表示用メディアクエリ内の調整（既存の @media 内にある .action-buttons を差し替え） */
-        .description { color: #57534e; max-width: 640px; margin: 0 auto 2.5rem auto; font-size: 1rem; line-height: 1.8; text-align: center; }
-        .cta-btn { display: inline-block; background-color: #059669; color: white; font-weight: 500; font-size: 1.125rem; padding: 1rem 2.5rem; border-radius: 0.75rem; text-decoration: none; box-shadow: 0 10px 15px -3px rgba(6, 150, 105, 0.3); transition: background-color 0.2s; }
-        .cta-btn:hover { background-color: #047857; }
-        
-        /* ✨【新設】おしゃれな活動アルバム（ギャラリー表示エリア） */
-        .gallery-section { margin-top: 5rem; padding-top: 4rem; border-top: 1px solid #e7e5e4; text-align: left; }
-        .gallery-title { font-size: 1.5rem; font-weight: 700; color: #1c1917; margin-bottom: 2rem; text-align: center; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
-        .gallery-card { background-color: white; border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e7e5e4; transition: transform 0.2s; }
-        .gallery-card:hover { transform: translateY(-4px); }
-        .gallery-img-wrapper { width: 100%; height: 180px; overflow: hidden; background-color: #f5f5f4; }
-        .gallery-img { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-info { padding: 1rem; }
-        .gallery-date { font-size: 0.75rem; color: #059669; font-weight: 700; margin-bottom: 0.25rem; }
-        .gallery-caption { font-size: 0.95rem; font-weight: 500; color: #292524; margin: 0; }
+        .btn-member { background-color: #059669; color: white; box-shadow: 0 10px 15px -3px rgba(6, 150, 105, 0.25); }
+        .btn-member:hover { background-color: #047857; }
 
-        footer { background-color: #1c1917; color: #a8a29e; padding: 2rem 0; text-align: center; font-size: 0.75rem; border-top: 1px solid #292524; margin-top: 5rem; }
-        footer p { margin: 0; }
+        /* ② フッター定義 */
+        footer { background-color: #1c1917; color: #a8a29e; padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; border-top: 1px solid #292524; margin-top: 5rem; }
+        .footer-nav { margin-bottom: 1rem; }
+        .footer-link { color: #d6d3d1; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .footer-link:hover { color: #34d399; }
+        footer p { margin: 0; color: #78716c; font-size: 0.75rem; }
 
-    /* PC表示時は3本線ボタンを非表示にする */
-        .menu-toggle { display: none; }        
-    /* 📱 スマホ・タブレット表示用メディアクエリ (1024px以下で3本線に切り替え) */
-        @media (max-width: 1024px) { 
-            h1 { font-size: 1.25rem; }
-           /* 🍔 3本線ボタンのデザイン定義 */
-            .menu-toggle { 
-                display: block; 
-                background: none; 
-                border: none; 
-                font-size: 1.75rem; 
-                color: #065f46; 
-                cursor: pointer; 
-                padding: 0.25rem 0.5rem;
-                line-height: 1;
-            } /* 3本線ボタンを表示 */
-    
-            nav {
-                display: none; /* デフォルトは折りたたむ */
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: white;
-                padding: 1.5rem;
-                box-sizing: border-box;
-                border-bottom: 1px solid #e7e5e4;
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-                gap: 1.25rem;
+        /* ⑤ 📱 スマホ表示用メディアクエリ */
+        @media (max-width: 640px) { 
+            h1 { font-size: 1.1rem; }
+            h2 { font-size: 1.35rem; } 
+            .action-buttons-grid { grid-template-columns: 1fr; gap: 0.85rem; }
+            .grid-btn { padding: 1rem; }
+            .description { font-size: 0.9rem; }
         }
-    
-    /* メニューが開いた状態 */
-    nav.open { display: flex; }
-    
-    h2 { font-size: 1.35rem; } 
-    /* スマホ表示時は下段の2列並びを縦1列に崩す */
-    .sub-buttons-row { flex-direction: column; gap: 0.75rem; }
-    .description { text-align: left; font-size: 0.925rem; } 
-    }
     </style>
 </head>
 <body>
 
-<header>
+    <header>
         <div class="nav-container">
             <h1>ウェルネスの森を守る会</h1>
-            <!-- 🍔 スマホ用 三本線ボタン -->
-            <button class="menu-toggle" id="menuToggle" aria-label="メニューを開く">☰</button>
-            <nav id="navMenu">
-                <a href="schedule.html" class="nav-link">活動スケジュール</a>
-                <a href="album.html" class="nav-link">活動アルバム</a>
-                <a href="member.html" class="member-btn">🔑 メンバー専用ページ</a>
-            </nav>
+            <!-- ① ログアウトボタン（即時セッション破棄） -->
+            <button onclick="handleLogout()" class="logout-btn">ログアウト</button>
         </div>
     </header>
+
     <main>
         <h2>六甲のグリーンベルトを守り、地域の保全を確保する活動です</h2>
         
@@ -150,35 +103,70 @@
             <img src="main-visual.jpg" alt="ウェルネスの森を守る会 メインビジュアル" class="main-img">
         </div>
 
-        <div class="action-buttons">
-            <!-- 上段：お知らせ（幅広） -->
-            <a href="news.html" class="sub-btn btn-news">📢 お知らせ・新着情報</a>
-            
-            <!-- 下段：活動予定 ＆ アルバム（2列並び） -->
-            <div class="sub-buttons-row">
-                <a href="schedule.html" class="sub-btn btn-schedule">📅 活動予定</a>
-                <a href="album.html" class="sub-btn btn-album">📁 アルバム</a>
-            </div>
-        </div>
+        <!-- ④ 画像直下の説明文 -->
         <p class="description">
             六甲山の魚屋道沿いの下草を払い、日本由来の樹木を植林する活動を概ね月に1回程度、実施しています。今後の活動スケジュールや活動中の画像をご覧いただけます。メンバー限定のコンテンツも用意しています。
         </p>
-        
-        <a href="member.html" class="cta-btn">メンバー専用ページはこちら ➔</a>
 
+        <!-- ⑤ 田の字（2列×2行）配置の4ボタン -->
+        <div class="action-buttons-grid">
+            <a href="news.html" class="grid-btn btn-news">📢 お知らせ・新着情報</a>
+            <a href="schedule.html" class="grid-btn btn-schedule">📅 活動予定</a>
+            <a href="album.html" class="grid-btn btn-album">📁 アルバム</a>
+            <a href="member.html" class="grid-btn btn-member">🔑 メンバー専用ページ ➔</a>
+        </div>
     </main>
 
     <footer>
+        <!-- ② フッターに「私たちについて」リンク -->
+        <div class="footer-nav">
+            <a href="aboutus.html" class="footer-link">私たちについて</a>
+        </div>
         <p>&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
     </footer>
 
     <script>
-        const menuToggle = document.getElementById('menuToggle');
-        const navMenu = document.getElementById('navMenu');
+        const INACTIVE_TIMEOUT = 10 * 60 * 1000; // 放置限界時間：10分（ミリ秒）
 
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('open');
+        // タイムスタンプ更新（現在時刻に上書き）
+        function updateSessionTimestamp() {
+            localStorage.setItem("authTimestamp", new Date().getTime().toString());
+        }
+
+        // 放置状態チェック
+        function checkAuthSession() {
+            const authTime = localStorage.getItem("authTimestamp");
+            if (!authTime) return; // ログイン前（未認証）の場合は判定スキップ
+
+            const currentTime = new Date().getTime();
+            // 10分以上放置されている場合
+            if (currentTime - parseInt(authTime, 10) > INACTIVE_TIMEOUT) {
+                localStorage.removeItem("authTimestamp");
+                alert("10分間操作がなかったため、自動ログアウトしました。");
+                window.location.href = "index.html"; // 入口へ強制移動
+            }
+        }
+
+        // ログアウト処理（ボタン押下時に即時消去して入口へ）
+        function handleLogout() {
+            localStorage.removeItem("authTimestamp");
+            window.location.href = "index.html";
+        }
+
+        // ユーザーの操作（クリック・キー入力・スクロール・タッチ）を検知して10分タイマーをリセット
+        const userEvents = ['click', 'keydown', 'scroll', 'touchstart', 'mousemove'];
+        userEvents.forEach(event => {
+            window.addEventListener(event, () => {
+                const authTime = localStorage.getItem("authTimestamp");
+                if (authTime && (new Date().getTime() - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
+                    updateSessionTimestamp();
+                }
+            }, { passive: true });
         });
+
+        // ページ読み込み時のチェック ＆ 1分間隔の定常監視
+        checkAuthSession();
+        setInterval(checkAuthSession, 60000);
     </script>
 </body>
 </html>
