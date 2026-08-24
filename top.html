@@ -69,7 +69,7 @@
         .btn-member { background-color: #059669; color: white; box-shadow: 0 10px 15px -3px rgba(6, 150, 105, 0.25); }
         .btn-member:hover { background-color: #047857; }
 
-        /* ② フッター定義（版権：上段・中央 / リンク：下段・左寄せ・同デザイン） */
+        /* ② フッター定義（版権：上段・中央 / リンク：下段・中央と左の中間位置） */
         footer { 
             background-color: #1c1917; 
             padding: 2rem 1.5rem; 
@@ -91,6 +91,8 @@
         }
         .footer-nav { 
             text-align: left; 
+            padding-left: 25%; /* 中央と左端のちょうど中間位置へ配置 */
+            box-sizing: border-box;
         }
         .footer-link { 
             color: #78716c; 
@@ -107,6 +109,7 @@
             .action-buttons-grid { grid-template-columns: 1fr; gap: 0.85rem; }
             .grid-btn { padding: 1rem; }
             .description { font-size: 0.9rem; }
+            .footer-nav { padding-left: 10%; } /* スマホ画面では少し左寄りにして可読性を確保 */
         }
     </style>
 </head>
@@ -146,7 +149,7 @@
             <!-- 上の行：版権表明（中央寄せ） -->
             <p class="copyright">&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
             
-            <!-- 下の行：私たちについて（左寄せ・版権と同サイズ＆同色） -->
+            <!-- 下の行：私たちについて（左と中央の中間に配置・版権と同サイズ＆同色） -->
             <div class="footer-nav">
                 <a href="aboutus.html" class="footer-link">私たちについて</a>
             </div>
