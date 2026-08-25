@@ -237,75 +237,65 @@
             return dateStr;
         }
 
-        async function loadNews() {
-            const container = document.getElementById('newsContainer');
-            try {
-                // 🟢 1. GitHub上の news_id.txt から最新のファイルIDを取得
-                const githubUser = "Wellness-no-mori"; // ⚠️要変更: GitHubのユーザー名
-                const githubRepo = "website"; // ⚠️要変更: リポジトリ名
-                
-                const idUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/main/news_id.txt?t=${new Date().getTime()}`;
-                const idResponse = await fetch(idUrl);
-                if (!idResponse.ok) throw new Error('news_id.txt の取得に失敗しました');
-                
-                const driveFileId = (await idResponse.text()).trim();
+	async function loadNews() {
+	    const container = document.getElementById('newsContainer');
+	    try {
+	        // 🟢 GitHub上の news.csv を直接取得（キャッシュ対策付き）
+	        const response = await fetch('news.csv?t=' + new Date().getTime());
+	        if (!response.ok) throw new Error('HTTP Error: ' + response.status);
+        
+        	// 取得したテキスト（CSVデータそのもの）
+        	const text = await response.text();
+        	const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim().split('\n');
+        
+        	if (lines.length === 0 || !lines[0].trim()) {
+            	container.innerHTML = '<p style="text-align:center; color:#78716c;">現在お知らせはありません。</p>';
+            	return;
+        	}
 
-                // 🟢 2. 取得したIDを使ってGoogleドライブから news.csv を取得
-                const csvUrl = `https://lh3.googleusercontent.com/d/${driveFileId}?t=${new Date().getTime()}`;
-                const response = await fetch(csvUrl);
-                if (!response.ok) throw new Error('HTTP Error: ' + response.status);
-                
-                const text = await response.text();
-                const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim().split('\n');
-                
-                if (lines.length === 0 || !lines[0].trim()) {
-                    container.innerHTML = '<p style="text-align:center; color:#78716c;">現在お知らせはありません。</p>';
-                    return;
-                }
+        	const now = new Date();
+        	let html = '';
 
-                const now = new Date();
-                let html = '';
+        	for (let i = 0; i < lines.length; i++) {
+            	const line = lines[i].trim();
+            	if (!line) continue;
+            
+            	const parts = line.split(',');
+            	const dateRaw = parts[0] ? parts[0].replace(/"/g, '').trim() : '';
+            	if (!dateRaw) continue;
 
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (!line) continue;
-                    
-                    const parts = line.split(',');
-                    const dateRaw = parts[0] ? parts[0].replace(/"/g, '').trim() : '';
-                    if (!dateRaw) continue;
+            	const dateFormatted = formatDateJapanese(dateRaw);
+            	const bodyParts = parts.slice(1).map(p => p.replace(/^"/, '').replace(/"$/, '').trim());
+            	const bodyHtml = bodyParts.join('<br>');
 
-                    const dateFormatted = formatDateJapanese(dateRaw);
-                    const bodyParts = parts.slice(1).map(p => p.replace(/^"/, '').replace(/"$/, '').trim());
-                    const bodyHtml = bodyParts.join('<br>');
+            	const newsDate = new Date(dateRaw.replace(/\//g, '-'));
+            	let isNew = false;
+            	if (!isNaN(newsDate.getTime())) {
+                	const diffTime = now.getTime() - newsDate.getTime();
+                	const diffDays = diffTime / (1000 * 3600 * 24);
+                	isNew = (diffDays >= 0 && diffDays <= 7);
+            	}
 
-                    const newsDate = new Date(dateRaw.replace(/\//g, '-'));
-                    let isNew = false;
-                    if (!isNaN(newsDate.getTime())) {
-                        const diffTime = now.getTime() - newsDate.getTime();
-                        const diffDays = diffTime / (1000 * 3600 * 24);
-                        isNew = (diffDays >= 0 && diffDays <= 7);
-                    }
+            	html += `
+                	<article class="news-card">
+                    	<div class="news-header">
+                        	<span class="news-date">${dateFormatted}</span>
+                        	${isNew ? '<span class="badge-new-text">NEW</span>' : ''}
+                    	</div>
+                    	<div class="news-body">${bodyHtml}</div>
+                	</article>
+           	 `;
+        	}
 
-                    html += `
-                        <article class="news-card">
-                            <div class="news-header">
-                                <span class="news-date">${dateFormatted}</span>
-                                ${isNew ? '<span class="badge-new-text">NEW</span>' : ''}
-                            </div>
-                            <div class="news-body">${bodyHtml}</div>
-                        </article>
-                    `;
-                }
+        	container.innerHTML = html || '<p style="text-align:center; color:#78716c;">現在お知らせはありません。</p>';
 
-                container.innerHTML = html || '<p style="text-align:center; color:#78716c;">現在お知らせはありません。</p>';
+    	} catch (error) {
+        	console.error(error);
+        	container.innerHTML = '<p style="text-align:center; color:#ef4444;">お知らせデータの読み込みに失敗しました。</p>';
+    		}
+	}
 
-            } catch (error) {
-                console.error(error);
-                container.innerHTML = '<p style="text-align:center; color:#ef4444;">お知らせデータの読み込みに失敗しました。</p>';
-            }
-        }
-
-        loadNews();
+	loadNews();
     </script>
 </body>
 </html>
