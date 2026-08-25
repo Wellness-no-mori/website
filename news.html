@@ -160,7 +160,7 @@
                 <a href="top.html">メインページ</a>
                 <a href="schedule.html">活動予定</a>
                 <a href="album.html">アルバム</a>
-                <a href="member.html">メンバー専用</a>
+                <a href="javascript:void(0)" onclick="goToMemberPage()">メンバー専用</a>
                 <a href="javascript:void(0)" onclick="handleLogout()" class="logout-link">ログアウト</a>
             </nav>
         </div>
@@ -197,7 +197,12 @@
             dropdownMenu.classList.remove('show');
         });
 
-        const INACTIVE_TIMEOUT = 10 * 60 * 1000;
+        // =================================================================
+        // 🔒 認証・セッション管理処理
+        // =================================================================
+        // ★ タイムアウト時間（分）を変数化（現在は10に設定）
+        const TIMEOUT_MINUTES = 10;
+        const INACTIVE_TIMEOUT = TIMEOUT_MINUTES * 60 * 1000;
 
         function handleLogout() {
             localStorage.removeItem("authTimestamp");
@@ -215,8 +220,20 @@
             const currentTime = new Date().getTime();
             if (currentTime - parseInt(authTime, 10) > INACTIVE_TIMEOUT) {
                 localStorage.removeItem("authTimestamp");
-                alert("10分間操作がなかったため、自動ログアウトしました。");
+                alert(`${TIMEOUT_MINUTES}分間操作がなかったため、自動ログアウトしました。`);
                 window.location.href = "index.html";
+            }
+        }
+
+        // メンバー専用ページへの遷移判定（未認証なら認証画面へ）
+        function goToMemberPage() {
+            const authTime = localStorage.getItem("authTimestamp");
+            const currentTime = new Date().getTime();
+
+            if (authTime && (currentTime - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
+                window.location.href = "member.html";
+            } else {
+                window.location.href = "member_auth.html"; // パスワード入力画面
             }
         }
 
@@ -233,6 +250,9 @@
         checkAuthSession();
         setInterval(checkAuthSession, 60000);
 
+        // =================================================================
+        // 📢 お知らせ表示処理
+        // =================================================================
         function formatDateJapanese(dateStr) {
             const parts = dateStr.replace(/\//g, '-').split('-');
             if (parts.length === 3) {
@@ -257,19 +277,17 @@
                     const line = rawLines[i].trim();
                     if (!line) continue;
                     
-                    // カンマで分割
                     const parts = line.split(',');
                     if (parts.length === 0) continue;
 
-                    // 第1項目（0番インデックス）＝ 日付
+                    // 第1項目 ＝ 日付
                     const dateRaw = parts[0].replace(/"/g, '').trim();
                     if (!dateRaw) continue;
 
                     // 第2項目以降 ＝ すべて本文（カンマ区切りをそのまま <br> 改行に変換）
                     const bodyParts = parts.slice(1).map(p => p.replace(/^"/, '').replace(/"$/, '').trim());
-                    const bodyHtml = bodyParts.join('<br>'); // ★カンマごとに改行を入れる仕様
+                    const bodyHtml = bodyParts.join('<br>');
 
-                    // 日付オブジェクトに変換
                     const parsedDate = new Date(dateRaw.replace(/\//g, '-'));
 
                     newsList.push({
@@ -284,7 +302,7 @@
                     return;
                 }
 
-                // 2. 日付の降順（新しいものが上、古いものが下）にソート
+                // 2. 日付の降順（新しい順）にソート
                 newsList.sort((a, b) => {
                     const timeA = isNaN(a.dateObj.getTime()) ? 0 : a.dateObj.getTime();
                     const timeB = isNaN(b.dateObj.getTime()) ? 0 : b.dateObj.getTime();
@@ -298,7 +316,7 @@
                 for (const item of newsList) {
                     const dateFormatted = formatDateJapanese(item.dateRaw);
                     
-                    // NEW判定（1週間 = 7日以内）
+                    // NEW判定（7日以内）
                     let isNew = false;
                     if (!isNaN(item.dateObj.getTime())) {
                         const diffTime = now.getTime() - item.dateObj.getTime();
@@ -306,7 +324,6 @@
                         isNew = (diffDays >= 0 && diffDays <= 7);
                     }
 
-                    // NEWバッジを日付の「左」に配置
                     html += `
                         <article class="news-card">
                             <div class="news-header">
@@ -325,7 +342,9 @@
                 container.innerHTML = '<p style="text-align:center; color:#ef4444;">お知らせデータの読み込みに失敗しました。</p>';
             }
         }
-	loadNews();
+
+        // 実行呼び出し
+        loadNews();
     </script>
 </body>
 </html>
