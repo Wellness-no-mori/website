@@ -218,7 +218,7 @@
             if (!authTime) return;
 
             const currentTime = new Date().getTime();
-            if (currentTime - parseInt(authTime, 10) > INACTIVE_TIMEOUT) {
+            if (currentTime - parseInt(authTime, TIMEOUT_MINUTES) > INACTIVE_TIMEOUT) {
                 localStorage.removeItem("authTimestamp");
                 alert(`${TIMEOUT_MINUTES}分間操作がなかったため、自動ログアウトしました。`);
                 window.location.href = "index.html";
@@ -230,10 +230,10 @@
             const authTime = localStorage.getItem("authTimestamp");
             const currentTime = new Date().getTime();
 
-            if (authTime && (currentTime - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
-                window.location.href = "member.html";
+            if (authTime && (currentTime - parseInt(authTime, TIMEOUT_MINUTES) <= INACTIVE_TIMEOUT)) {
+                window.location.href = "senyou.html";
             } else {
-                window.location.href = "member_auth.html"; // パスワード入力画面
+                window.location.href = "member.html"; // パスワード入力画面
             }
         }
 
@@ -241,7 +241,7 @@
         userEvents.forEach(event => {
             window.addEventListener(event, () => {
                 const authTime = localStorage.getItem("authTimestamp");
-                if (authTime && (new Date().getTime() - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
+                if (authTime && (new Date().getTime() - parseInt(authTime, TIMEOUT_MINUTES) <= INACTIVE_TIMEOUT)) {
                     updateSessionTimestamp();
                 }
             }, { passive: true });
