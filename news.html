@@ -240,12 +240,19 @@
         async function loadNews() {
             const container = document.getElementById('newsContainer');
             try {
-                /* 
-                 ※ CSVの配置場所に応じてパスを変更してください：
-                 ・news.htmlと同じ場所にある場合 ➔ 'news.csv?t='
-                 ・sewaフォルダの中にある場合    ➔ 'sewa/news.csv?t='
-                */
-                const response = await fetch('sewa/news.csv?t=' + new Date().getTime());
+                // 🟢 1. GitHub上の news_id.txt から最新のファイルIDを取得
+                const githubUser = "Wellness-no-mori"; // ⚠️要変更: GitHubのユーザー名
+                const githubRepo = "website"; // ⚠️要変更: リポジトリ名
+                
+                const idUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/main/news_id.txt?t=${new Date().getTime()}`;
+                const idResponse = await fetch(idUrl);
+                if (!idResponse.ok) throw new Error('news_id.txt の取得に失敗しました');
+                
+                const driveFileId = (await idResponse.text()).trim();
+
+                // 🟢 2. 取得したIDを使ってGoogleドライブから news.csv を取得
+                const csvUrl = `https://lh3.googleusercontent.com/d/${driveFileId}?t=${new Date().getTime()}`;
+                const response = await fetch(csvUrl);
                 if (!response.ok) throw new Error('HTTP Error: ' + response.status);
                 
                 const text = await response.text();
