@@ -188,6 +188,7 @@
                 if (data && data.matched === true) {
                     errorArea.innerText = "";
                     localStorage.setItem("isMemberAuthenticated", "true");
+		    localStorage.setItem("authTimestamp", new Date().getTime().toString());
 
                     document.getElementById("auth-section").classList.add("hidden");
                     document.getElementById("menu-section").classList.remove("hidden");
