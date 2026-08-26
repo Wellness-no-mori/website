@@ -101,7 +101,7 @@
 
         window.addEventListener("DOMContentLoaded", () => {
             // 既に認証済みの場合のみメニューを表示
-            if (sessionStorage.getItem("isMemberAuthenticated") === "true") {
+            if (localStorage.getItem("isMemberAuthenticated") === "true") {
                 document.getElementById("auth-section").classList.add("hidden");
                 document.getElementById("menu-section").classList.remove("hidden");
             }
@@ -109,7 +109,7 @@
 
         // 🛡️ A案：明示的にログアウト（認証情報を消去してログイン画面に戻す）
         function logout() {
-            sessionStorage.removeItem("isMemberAuthenticated");
+            localStorage.removeItem("isMemberAuthenticated");
             document.getElementById("pw-input").value = "";
             document.getElementById("menu-section").classList.add("hidden");
             document.getElementById("auth-section").classList.remove("hidden");
@@ -187,7 +187,7 @@
         // GAS側から { matched: true } が返ってきたか判定
                 if (data && data.matched === true) {
                     errorArea.innerText = "";
-                    sessionStorage.setItem("isMemberAuthenticated", "true");
+                    localStorage.setItem("isMemberAuthenticated", "true");
 
                     document.getElementById("auth-section").classList.add("hidden");
                     document.getElementById("menu-section").classList.remove("hidden");
