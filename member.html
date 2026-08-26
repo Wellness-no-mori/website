@@ -98,12 +98,26 @@
 
     <script>        
         const GAS_URL = "https://script.google.com/macros/s/AKfycbz4x4ENhGVuVkh8kTKa4svHBq7UxzT4UtAPvQqRZvvGPN_AKDImD7bm9I6GvvsAPJ3Txg/exec";
+        const TIMEOUT_MINUTES = 10;
+        const INACTIVE_TIMEOUT = TIMEOUT_MINUTES * 60 * 1000; // 10分（ミリ秒）
 
         window.addEventListener("DOMContentLoaded", () => {
-            // 既に認証済みの場合のみメニューを表示
-            if (localStorage.getItem("isMemberAuthenticated") === "true") {
+            const isAuth = localStorage.getItem("isMemberAuthenticated");
+            const authTime = localStorage.getItem("authTimestamp");
+            const currentTime = new Date().getTime();
+
+            // 認証済みかつ10分以内か判定
+            if (isAuth === "true" && authTime && (currentTime - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
+                // 10分以内なので専用メニューを表示し、タイムスタンプを更新
+                localStorage.setItem("authTimestamp", currentTime.toString());
                 document.getElementById("auth-section").classList.add("hidden");
                 document.getElementById("menu-section").classList.remove("hidden");
+            } else {
+                // 未認証、または10分を超えていたら認証情報をクリアして入力画面を表示
+                localStorage.removeItem("isMemberAuthenticated");
+                localStorage.removeItem("authTimestamp");
+                document.getElementById("auth-section").classList.remove("hidden");
+                document.getElementById("menu-section").classList.add("hidden");
             }
         });
 
