@@ -157,39 +157,55 @@
     </footer>
 
     <script>
-        const INACTIVE_TIMEOUT = 10 * 60 * 1000; // 放置限界時間：10分（ミリ秒）
+        const TIMEOUT_MINUTES = 10;
+        const INACTIVE_TIMEOUT = TIMEOUT_MINUTES * 60 * 1000; // 10分（ミリ秒）
 
-        // タイムスタンプ更新（現在時刻に上書き）
+        // 認証情報を完全削除する共通関数
+        function clearMemberAuth() {
+            localStorage.removeItem("isMemberAuthenticated");
+            localStorage.removeItem("authTimestamp");
+        }
+
+        // タイムスタンプ更新（ログイン中のみ上書き）
         function updateSessionTimestamp() {
-            localStorage.setItem("authTimestamp", new Date().getTime().toString());
+            if (localStorage.getItem("isMemberAuthenticated") === "true") {
+                localStorage.setItem("authTimestamp", new Date().getTime().toString());
+            }
         }
 
         // 放置状態チェック
         function checkAuthSession() {
+            const isAuth = localStorage.getItem("isMemberAuthenticated");
             const authTime = localStorage.getItem("authTimestamp");
-            if (!authTime) return; // ログイン前（未認証）の場合は判定スキップ
+
+            // ログインしていない場合はスキップ
+            if (isAuth !== "true" || !authTime) return;
 
             const currentTime = new Date().getTime();
             // 10分以上放置されている場合
             if (currentTime - parseInt(authTime, 10) > INACTIVE_TIMEOUT) {
-                localStorage.removeItem("authTimestamp");
-                alert("10分間操作がなかったため、自動ログアウトしました。");
-                window.location.href = "index.html"; // 入口へ強制移動
+                clearMemberAuth(); // 両方のフラグを破棄
+                alert(`${TIMEOUT_MINUTES}分間操作がなかったため、自動ログアウトしました。`);
+                window.location.href = "index.html"; // 入口へ移動
             }
         }
 
-        // ログアウト処理（ボタン押下時に即時消去して入口へ）
+        // ログアウト処理（ボタン押下時に完全消去して index.html へ）
         function handleLogout() {
-            localStorage.removeItem("authTimestamp");
+            clearMemberAuth(); // isMemberAuthenticated と authTimestamp の両方を消去
+            alert("ログアウトしました。");
             window.location.href = "index.html";
         }
 
-        // ユーザーの操作（クリック・キー入力・スクロール・タッチ）を検知して10分タイマーをリセット
+        // ユーザーの操作を検知してタイマー延長
         const userEvents = ['click', 'keydown', 'scroll', 'touchstart', 'mousemove'];
-        userEvents.forEach(event => {
-            window.addEventListener(event, () => {
+        userEvents.forEach(eventType => {
+            window.addEventListener(eventType, () => {
+                const isAuth = localStorage.getItem("isMemberAuthenticated");
                 const authTime = localStorage.getItem("authTimestamp");
-                if (authTime && (new Date().getTime() - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
+                
+                // ログイン済み かつ 10分以内の場合のみ延長
+                if (isAuth === "true" && authTime && (new Date().getTime() - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
                     updateSessionTimestamp();
                 }
             }, { passive: true });
@@ -199,5 +215,6 @@
         checkAuthSession();
         setInterval(checkAuthSession, 60000);
     </script>
-</body>
+
+    </body>
 </html>
