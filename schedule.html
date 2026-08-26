@@ -4,40 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>ウェルネスの森を守る会 | 活動スケジュール</title>
 
-    <!-- 🖼️ タブアイコン（お気に入り・ホーム画面アイコン対応） -->
+    <!-- 全ページ共通 お気に入り・タブ用アイコン -->
     <link rel="icon" href="logo.png?v=2" type="image/png">
     <link rel="apple-touch-icon" href="logo.png?v=2">
 
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <title>活動スケジュール | ウェルネスの森を守る会</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans JP', sans-serif; background-color: #f9f8f6; color: #292524; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; -webkit-font-smoothing: antialiased; }
-        
-        /* ヘッダー＆ハンバーガーボタン */
         header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(231, 229, 228, 0.6); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
-        h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.1em; color: #065f46; margin: 0; }
+        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; position: relative; }
+        h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.05em; color: #065f46; margin: 0; white-space: nowrap; }
         
-        .hamburger { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 70; }
-        .hamburger span { width: 100%; height: 2px; background-color: #065f46; transition: all 0.3s ease; transform-origin: center; }
-        .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-        .hamburger.active span:nth-child(2) { opacity: 0; }
-        .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        /* 三本線アイコンボタン */
+        .menu-btn {
+            background: none;
+            border: 1px solid #d6d3d1;
+            border-radius: 0.375rem;
+            font-size: 1.25rem;
+            padding: 0.25rem 0.6rem;
+            cursor: pointer;
+            color: #065f46;
+            line-height: 1;
+        }
+        .menu-btn:hover { background-color: #f0fdf4; }
 
-        /* ドロワーメニュー（右側からの滑らかなスライド表示） */
-        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 55; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
-        .drawer-overlay.active { opacity: 1; visibility: visible; }
-        
-        .drawer-menu { position: fixed; top: 0; right: 0; width: 280px; height: 100%; background: white; z-index: 60; box-shadow: -2px 0 10px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s ease; padding: 5rem 1.5rem 2rem; box-sizing: border-box; display: flex; flex-direction: column; }
-        .drawer-menu.active { transform: translateX(0); }
-        .drawer-menu a { display: block; padding: 0.85rem 0; color: #1c1917; text-decoration: none; font-weight: 500; border-bottom: 1px solid #f5f5f4; transition: color 0.2s; }
-        .drawer-menu a:hover { color: #059669; }
+        /* ポップアップドロップダウンメニュー */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 1.5rem;
+            background-color: white;
+            border: 1px solid #e7e5e4;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            min-width: 160px;
+            overflow: hidden;
+            z-index: 100;
+        }
+        .dropdown-menu.show { display: block; }
+        .dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #292524;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f5f5f4;
+            transition: background-color 0.2s;
+        }
+        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a:hover { background-color: #f0fdf4; color: #065f46; }
+        .dropdown-menu a.logout-link { color: #ef4444; }
+        .dropdown-menu a.logout-link:hover { background-color: #fef2f2; }
 
-        main { max-width: 600px; margin: 0 auto; padding: 3rem 1.5rem; text-align: center; width: 100%; box-sizing: border-box; }
-        h2 { font-size: 1.75rem; font-weight: 700; color: #1c1917; margin: 0 0 2rem 0; }
+        main { max-width: 600px; margin: 0 auto; padding: 2.5rem 1.5rem 3rem 1.5rem; text-align: center; width: 100%; box-sizing: border-box; }
+        h2 { font-size: 1.6rem; font-weight: 700; color: #1c1917; margin: 0 0 2rem 0; text-align: center; }
         
         /* 日付一覧エリア */
         .schedule-list { display: flex; flex-direction: column; gap: 1rem; text-align: center; margin-bottom: 2.5rem; }
@@ -69,13 +94,45 @@
         .back-btn { display: inline-block; background-color: transparent; color: #57534e; border: 1px solid #d6d3d1; font-weight: 500; font-size: 0.95rem; padding: 0.6rem 2rem; border-radius: 0.75rem; text-decoration: none; transition: all 0.2s; cursor: pointer; }
         .back-btn:hover { background-color: #f5f5f4; color: #2c2a29; }
 
-        /* フッター（news.htmlと完全統一） */
-        footer { background-color: #1c1917; color: #a8a29e; padding: 2rem 0; text-align: center; font-size: 0.75rem; border-top: 1px solid #292524; margin-top: auto; }
-        footer p { margin: 0; }
-        footer a { color: #a8a29e; text-decoration: underline; }
-        footer a:hover { color: #ffffff; }
-        
-        @media (max-width: 768px) { h2 { font-size: 1.4rem; } .info-value { font-size: 1.15rem; } }
+        /* 共通フッター */
+        footer { 
+            background-color: #1c1917; 
+            padding: 2rem 1.5rem; 
+            border-top: 1px solid #292524; 
+            margin-top: 5rem; 
+        }
+        .footer-container { 
+            max-width: 896px; 
+            margin: 0 auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 0.75rem; 
+        }
+        .copyright { 
+            margin: 0; 
+            color: #78716c; 
+            font-size: 0.75rem; 
+            text-align: center; 
+        }
+        .footer-nav { 
+            text-align: left; 
+            padding-left: 15%; 
+            box-sizing: border-box;
+        }
+        .footer-link { 
+            color: #78716c; 
+            text-decoration: none; 
+            font-size: 0.75rem; 
+            transition: color 0.2s; 
+        }
+        .footer-link:hover { color: #34d399; }
+
+        @media (max-width: 640px) { 
+            h1 { font-size: 1.1rem; }
+            h2 { font-size: 1.35rem; } 
+            .info-value { font-size: 1.15rem; }
+            .footer-nav { padding-left: 10%; }
+        }
     </style>
 </head>
 <body>
@@ -84,25 +141,20 @@
         <div class="nav-container">
             <h1>ウェルネスの森を守る会</h1>
             <!-- 三本線ボタン -->
-            <button class="hamburger" id="hamburger-btn" aria-label="メニューを開く">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <button class="menu-btn" id="menuBtn" aria-label="メニューを開く">☰</button>
+            <!-- クリック時に表示されるドロップダウンメニュー -->
+            <nav class="dropdown-menu" id="dropdownMenu">
+                <a href="top.html">メインページ</a>
+                <a href="news.html">お知らせ</a>
+                <a href="album.html">アルバム</a>
+                <a href="member.html">メンバー専用</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="logout-link">ログアウト</a>
+            </nav>
         </div>
     </header>
 
-    <!-- ドロワーメニュー領域 -->
-    <div class="drawer-overlay" id="drawer-overlay"></div>
-    <nav class="drawer-menu" id="drawer-menu">
-        <a href="top.html">トップページ</a>
-        <a href="news.html">お知らせ</a>
-        <a href="album.html">アルバム</a>
-        <a href="member.html">メンバー専用</a>
-    </nav>
-
     <main>
-        <h2 id="page-title">今後の活動予定</h2>
+        <h2 id="page-title">📅 今後の活動予定</h2>
         
         <div id="status-message">予定表を読み込んでいます…</div>
 
@@ -144,32 +196,69 @@
     </main>
 
     <footer>
-        <p style="margin-bottom: 0.5rem;"><a href="about.html">私たちについて</a></p>
-        <p>&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
+        <div class="footer-container">
+            <p class="copyright">&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
+            <div class="footer-nav">
+                <a href="aboutus.html" class="footer-link">私たちについて</a>
+            </div>
+        </div>
     </footer>
 
     <script>
-        // 三本線メニュー制御（スクロール固定含む）
-        const hamburgerBtn = document.getElementById('hamburger-btn');
-        const drawerMenu = document.getElementById('drawer-menu');
-        const drawerOverlay = document.getElementById('drawer-overlay');
+        // 三本線メニューの開閉制御
+        const menuBtn = document.getElementById('menuBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
 
-        function toggleMenu() {
-            const isActive = hamburgerBtn.classList.toggle('active');
-            drawerMenu.classList.toggle('active');
-            drawerOverlay.classList.toggle('active');
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
 
-            if (isActive) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
+        // メニュー外をクリックしたら閉じる
+        document.addEventListener('click', () => {
+            dropdownMenu.classList.remove('show');
+        });
+
+        // =================================================================
+        // 🔒 認証・セッション管理処理
+        // =================================================================
+        const TIMEOUT_MINUTES = 10;
+        const INACTIVE_TIMEOUT = TIMEOUT_MINUTES * 60 * 1000;
+
+        function clearMemberAuth() {
+            localStorage.removeItem("isMemberAuthenticated");
+            localStorage.removeItem("authTimestamp");
+        }
+
+        function handleLogout() {
+            clearMemberAuth();
+            alert("ログアウトしました。");
+            window.location.href = "top.html";
+        }
+
+        function updateSessionTimestamp() {
+            if (localStorage.getItem("isMemberAuthenticated") === "true") {
+                const authTime = localStorage.getItem("authTimestamp");
+                const currentTime = new Date().getTime();
+
+                if (authTime && (currentTime - parseInt(authTime, 10) > INACTIVE_TIMEOUT)) {
+                    clearMemberAuth();
+                } else {
+                    localStorage.setItem("authTimestamp", currentTime.toString());
+                }
             }
         }
 
-        hamburgerBtn.addEventListener('click', toggleMenu);
-        drawerOverlay.addEventListener('click', toggleMenu);
+        const userEvents = ['click', 'keydown', 'scroll', 'touchstart', 'mousemove'];
+        userEvents.forEach(eventType => {
+            window.addEventListener(eventType, updateSessionTimestamp, { passive: true });
+        });
 
-        // CSV読み込み＆リスト処理
+        updateSessionTimestamp();
+
+        // =================================================================
+        // 📅 スケジュール表示処理
+        // =================================================================
         const csvUrl = 'activity.csv';
         let eventsList = [];
         let currentIndex = 0;
@@ -178,7 +267,7 @@
             const statusEl = document.getElementById('status-message');
 
             try {
-                const response = await fetch(csvUrl);
+                const response = await fetch(csvUrl + '?t=' + new Date().getTime());
                 if (!response.ok) throw new Error('予定表の取得に失敗しました');
                 
                 const text = await response.text();
@@ -194,7 +283,7 @@
                     if (columns.length < 5) continue;
 
                     const dateStr = columns[0].trim();
-                    const eventDate = new Date(dateStr);
+                    const eventDate = new Date(dateStr.replace(/\//g, '-'));
 
                     if (!isNaN(eventDate.getTime()) && eventDate >= today) {
                         eventsList.push({
@@ -207,7 +296,7 @@
                     }
                 }
 
-                eventsList.sort((a, b) => new Date(a.date) - new Date(b.date));
+                eventsList.sort((a, b) => new Date(a.date.replace(/\//g, '-')) - new Date(b.date.replace(/\//g, '-')));
 
                 if (eventsList.length > 0) {
                     statusEl.style.display = 'none';
@@ -223,7 +312,7 @@
         }
 
         function showListMode() {
-            document.getElementById('page-title').textContent = '今後の活動予定';
+            document.getElementById('page-title').textContent = '📅 今後の活動予定';
             document.getElementById('schedule-card').style.display = 'none';
             document.getElementById('pagination-area').style.display = 'none';
             document.getElementById('back-to-list-btn').style.display = 'none';
@@ -284,7 +373,7 @@
         }
 
         function formatWithDayOfWeek(dateStr) {
-            const date = new Date(dateStr);
+            const date = new Date(dateStr.replace(/\//g, '-'));
             if (isNaN(date.getTime())) return dateStr;
 
             const days = ['日', '月', '火', '水', '木', '金', '土'];
