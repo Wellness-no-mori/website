@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>メンバー専用ページ - ウェルネスの森を守る会</title>
+    <title>メンバー専用 - ウェルネスの森を守る会</title>
 
     <!-- 🖼️ タブアイコン -->
     <link rel="icon" href="logo.png?v=2" type="image/png">
@@ -12,57 +12,131 @@
 
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans JP', sans-serif; background-color: #f9f8f6; color: #292524; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; -webkit-font-smoothing: antialiased; }
-        header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(231, 229, 228, 0.6); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
-        h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.1em; color: #065f46; margin: 0; white-space: nowrap; }
+        body { 
+            font-family: 'Noto Sans JP', sans-serif; 
+            background-color: #f9f8f6; 
+            color: #292524; 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            -webkit-font-smoothing: antialiased; 
+        }
+
+        /* 画面中央に必要最小限のカードのみ配置 */
+        main { 
+            max-width: 400px; 
+            width: 90%; 
+            padding: 1rem; 
+            box-sizing: border-box; 
+        }
         
-        main { max-width: 500px; margin: 0 auto; padding: 4rem 1.5rem 3rem 1.5rem; text-align: center; width: 100%; box-sizing: border-box; }
-        .auth-card { background-color: white; border-radius: 1.5rem; padding: 2.5rem 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02); border: 1px solid #e7e5e4; text-align: center; }
-        h2 { font-size: 1.35rem; font-weight: 700; color: #1c1917; margin: 0 0 1.5rem 0; line-height: 1.5; }
+        .auth-card { 
+            background-color: white; 
+            border-radius: 1rem; 
+            padding: 1.75rem 1.5rem; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08); 
+            border: 1px solid #e7e5e4; 
+            text-align: center; 
+        }
         
-        .input-wrapper { position: relative; display: flex; align-items: center; margin-bottom: 1.5rem; background-color: #fafaf9; border: 1px solid #d6d3d1; border-radius: 0.75rem; box-sizing: border-box; }
-        .input-wrapper:focus-within { border-color: #059669; background-color: white; box-shadow: 0 0 0 3px rgba(6, 150, 105, 0.1); }
+        h2 { 
+            font-size: 1.15rem; 
+            font-weight: 700; 
+            color: #1c1917; 
+            margin: 0 0 1.25rem 0; 
+            line-height: 1.4; 
+        }
         
-        input[type="password"], input[type="text"] { font-family: 'Noto Sans JP', sans-serif; width: 100%; padding: 0.85rem 3.5rem 0.85rem 1rem; font-size: 1rem; border: none; background: transparent; box-sizing: border-box; text-align: center; color: #1c1917; outline: none; }
+        .input-wrapper { 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 1rem; 
+            background-color: #fafaf9; 
+            border: 1px solid #d6d3d1; 
+            border-radius: 0.5rem; 
+            box-sizing: border-box; 
+        }
+        .input-wrapper:focus-within { 
+            border-color: #059669; 
+            background-color: white; 
+            box-shadow: 0 0 0 3px rgba(6, 150, 105, 0.1); 
+        }
+        
+        input[type="password"], input[type="text"] { 
+            font-family: 'Noto Sans JP', sans-serif; 
+            width: 100%; 
+            padding: 0.75rem 3rem 0.75rem 0.75rem; 
+            font-size: 0.95rem; 
+            border: none; 
+            background: transparent; 
+            box-sizing: border-box; 
+            text-align: center; 
+            color: #1c1917; 
+            outline: none; 
+        }
         
         input::-ms-reveal, input::-ms-clear { display: none !important; }
         input::-webkit-contacts-auto-fill-button, input::-webkit-credentials-auto-fill-button { display: none !important; }
         
-        .toggle-password { position: absolute; right: 0.85rem; background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; color: #78716c; transition: color 0.2s, opacity 0.2s; opacity: 0; pointer-events: none; z-index: 10; }
+        .toggle-password { 
+            position: absolute; 
+            right: 0.65rem; 
+            background: none; 
+            border: none; 
+            padding: 0; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 22px; 
+            height: 22px; 
+            color: #78716c; 
+            transition: color 0.2s, opacity 0.2s; 
+            opacity: 0; 
+            pointer-events: none; 
+            z-index: 10; 
+        }
         .toggle-password:hover { color: #1c1917; }
         .toggle-password.show { opacity: 1; pointer-events: auto; }
-        .toggle-password svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .toggle-password svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         
-        .btn { display: block; width: 100%; padding: 0.85rem 0; border-radius: 0.75rem; font-weight: 500; font-size: 1rem; text-decoration: none; transition: all 0.2s; box-sizing: border-box; text-align: center; cursor: pointer; border: none; }
-        .btn-submit { background-color: #059669; color: white; box-shadow: 0 4px 6px -1px rgba(6, 150, 105, 0.2); }
+        .btn { 
+            display: block; 
+            width: 100%; 
+            padding: 0.75rem 0; 
+            border-radius: 0.5rem; 
+            font-weight: 500; 
+            font-size: 0.95rem; 
+            text-decoration: none; 
+            transition: all 0.2s; 
+            box-sizing: border-box; 
+            text-align: center; 
+            cursor: pointer; 
+            border: none; 
+        }
+        .btn-submit { background-color: #059669; color: white; box-shadow: 0 2px 4px rgba(6, 150, 105, 0.15); }
         .btn-submit:hover { background-color: #047857; }
         
-        .btn-menu { background-color: #115e59; color: white; margin-bottom: 1rem; box-shadow: 0 4px 6px -1px rgba(17, 94, 89, 0.2); }
+        .btn-menu { background-color: #115e59; color: white; margin-bottom: 0.75rem; box-shadow: 0 2px 4px rgba(17, 94, 89, 0.15); }
         .btn-menu:hover { background-color: #134e4a; }
         
-        .btn-logout { background-color: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; margin-top: 1.5rem; }
+        .btn-logout { background-color: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; margin-top: 1.25rem; }
         .btn-logout:hover { background-color: #e5e7eb; color: #111827; }
 
-        .btn-back { background-color: #e7e5e4; color: #44403c; border: 1px solid #d6d3d1; margin-top: 0.75rem; }
+        .btn-back { background-color: #e7e5e4; color: #44403c; border: 1px solid #d6d3d1; margin-top: 0.5rem; }
         .btn-back:hover { background-color: #d6d3d1; }
         
-        .error-msg { color: #b91c1c; font-size: 0.875rem; font-weight: 500; margin-top: 0.75rem; min-height: 1.25rem; line-height: 1.5; }
+        .error-msg { color: #b91c1c; font-size: 0.8rem; font-weight: 500; margin-top: 0.5rem; min-height: 1rem; line-height: 1.4; }
         .hidden { display: none !important; }
-
-        footer { background-color: #1c1917; color: #a8a29e; padding: 2rem 0; text-align: center; font-size: 0.75rem; border-top: 1px solid #292524; margin-top: auto; }
-        footer p { margin: 0; }
     </style>
 </head>
 <body>
-
-    <header>
-        <div class="nav-container">
-            <h1>ウェルネスの森を守る会</h1>
-        </div>
-    </header>
 
     <main>
         <div class="auth-card">
@@ -97,57 +171,45 @@
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
-    </footer>
-
     <script>        
         const GAS_URL = "https://script.google.com/macros/s/AKfycbz4x4ENhGVuVkh8kTKa4svHBq7UxzT4UtAPvQqRZvvGPN_AKDImD7bm9I6GvvsAPJ3Txg/exec";
         const TIMEOUT_MINUTES = 10;
-        const INACTIVE_TIMEOUT = TIMEOUT_MINUTES * 60 * 1000; // 10分（ミリ秒）
+        const INACTIVE_TIMEOUT = TIMEOUT_MINUTES * 60 * 1000;
 
-        // 認証情報を完全にクリアする共通関数
         function clearMemberAuth() {
             localStorage.removeItem("isMemberAuthenticated");
             localStorage.removeItem("authTimestamp");
         }
 
-        // タイムスタンプを延長更新する処理
         function extendSession() {
             if (localStorage.getItem("isMemberAuthenticated") === "true") {
                 localStorage.setItem("authTimestamp", new Date().getTime().toString());
             }
         }
 
-        // ページ読み込み時
         window.addEventListener("DOMContentLoaded", () => {
             const isAuth = localStorage.getItem("isMemberAuthenticated");
             const authTime = localStorage.getItem("authTimestamp");
             const currentTime = new Date().getTime();
 
-            // 認証済みかつ10分以内か判定
             if (isAuth === "true" && authTime && (currentTime - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
-                // 10分以内なので専用メニューを表示し、タイムスタンプを更新
                 extendSession();
                 document.getElementById("auth-section").classList.add("hidden");
                 document.getElementById("menu-section").classList.remove("hidden");
 
-                // 操作監視（マウス移動、キー操作等）で10分タイマーを常に自動延長
                 ["mousemove", "keydown", "click", "scroll", "touchstart"].forEach(eventType => {
                     window.addEventListener(eventType, extendSession, { passive: true });
                 });
             } else {
-                // 未認証、または10分を超えていたら認証情報をクリアして入力画面を表示
                 clearMemberAuth();
                 document.getElementById("auth-section").classList.remove("hidden");
                 document.getElementById("menu-section").classList.add("hidden");
             }
         });
 
-        // 明示的にログアウト（認証情報を完全消去して index.html へ移動）
+        // 即時ログアウト＆index.htmlへ移動
         function logout() {
             clearMemberAuth();
-            alert("ログアウトしました。");
             window.location.href = "index.html";
         }
 
@@ -187,7 +249,6 @@
             }).replace(/ /g, " ");
         }
 
-        // パスワード判定処理
         function checkPassword() {
             const pwInput = document.getElementById("pw-input");
             let userInput = pwInput.value.trim();
@@ -221,14 +282,12 @@
             .then(data => {
                 if (data && data.matched === true) {
                     errorArea.innerText = "";
-                    // 認証フラグとタイムスタンプの両方を確実に保存
                     localStorage.setItem("isMemberAuthenticated", "true");
                     localStorage.setItem("authTimestamp", new Date().getTime().toString());
 
                     document.getElementById("auth-section").classList.add("hidden");
                     document.getElementById("menu-section").classList.remove("hidden");
 
-                    // ログイン後も操作監視を開始
                     ["mousemove", "keydown", "click", "scroll", "touchstart"].forEach(eventType => {
                         window.addEventListener(eventType, extendSession, { passive: true });
                     });
