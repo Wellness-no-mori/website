@@ -144,12 +144,11 @@
             }
         });
 
-        // 明示的にログアウト（認証情報を完全消去してログイン画面に戻す）
+        // 明示的にログアウト（認証情報を完全消去して index.html へ移動）
         function logout() {
             clearMemberAuth();
-            document.getElementById("pw-input").value = "";
-            document.getElementById("menu-section").classList.add("hidden");
-            document.getElementById("auth-section").classList.remove("hidden");
+            alert("ログアウトしました。");
+            window.location.href = "index.html";
         }
 
         document.getElementById("pw-input").addEventListener("keydown", function(event) {
