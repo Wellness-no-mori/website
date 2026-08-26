@@ -4,18 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>ウェルネスの森を守る会 | 活動アルバム</title>
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- 全ページ共通 お気に入り・タブ用アイコン -->
+    <link rel="icon" href="logo.png?v=2" type="image/png">
+    <link rel="apple-touch-icon" href="logo.png?v=2">
+
+    <title>活動アルバム | ウェルネスの森を守る会</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans JP', sans-serif; background-color: #f9f8f6; color: #292524; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; -webkit-font-smoothing: antialiased; }
         header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(231, 229, 228, 0.6); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-        h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.1em; color: #065f46; margin: 0; }
+        .nav-container { max-width: 1152px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; position: relative; }
+        h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.05em; color: #065f46; margin: 0; white-space: nowrap; }
         
-        main { max-width: 896px; margin: 0 auto; padding: 3rem 1.5rem; text-align: center; width: 100%; box-sizing: border-box; }
-        h2 { font-size: 1.75rem; font-weight: 700; color: #1c1917; margin: 0 0 0.5rem 0; }
+        /* 三本線アイコンボタン */
+        .menu-btn {
+            background: none;
+            border: 1px solid #d6d3d1;
+            border-radius: 0.375rem;
+            font-size: 1.25rem;
+            padding: 0.25rem 0.6rem;
+            cursor: pointer;
+            color: #065f46;
+            line-height: 1;
+        }
+        .menu-btn:hover { background-color: #f0fdf4; }
+
+        /* ポップアップドロップダウンメニュー */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 1.5rem;
+            background-color: white;
+            border: 1px solid #e7e5e4;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            min-width: 160px;
+            overflow: hidden;
+            z-index: 100;
+        }
+        .dropdown-menu.show { display: block; }
+        .dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #292524;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f5f5f4;
+            transition: background-color 0.2s;
+        }
+        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a:hover { background-color: #f0fdf4; color: #065f46; }
+        .dropdown-menu a.logout-link { color: #ef4444; }
+        .dropdown-menu a.logout-link:hover { background-color: #fef2f2; }
+
+        main { max-width: 896px; margin: 0 auto; padding: 2.5rem 1.5rem 3rem 1.5rem; text-align: center; width: 100%; box-sizing: border-box; }
+        h2 { font-size: 1.6rem; font-weight: 700; color: #1c1917; margin: 0 0 0.5rem 0; text-align: center; }
         .subtitle { font-size: 0.95rem; color: #57534e; margin-bottom: 2.5rem; }
         
         /* 📋 ステップ1: シンプルなテキストリンク一覧 */
@@ -29,7 +76,8 @@
         .thumb-card { aspect-ratio: 1 / 1; border-radius: 0.75rem; overflow: hidden; background-color: #e7e5e4; cursor: pointer; position: relative; border: 1px solid #e7e5e4; }
         .thumb-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s; }
         .thumb-card:hover .thumb-img { transform: scale(1.05); }
-        /* 🔍 拡大表示モーダル（背景を透けない完全な黒に変更） */
+
+        /* 🔍 拡大表示モーダル */
         .modal-overlay { 
             display: none; 
             position: fixed; 
@@ -37,7 +85,7 @@
             left: 0; 
             width: 100%; 
             height: 100%; 
-            background-color: #000000; /* 裏ページが透けない完全な黒 */
+            background-color: #000000; 
             z-index: 1000; 
             justify-content: center; 
             align-items: center; 
@@ -46,7 +94,6 @@
         .modal-overlay.active { display: flex; }
         .modal-content { max-width: 90%; max-height: 70vh; object-fit: contain; border-radius: 0.5rem; }
         
-        /* モーダル内の左右矢印ボタン */
         .modal-btn { 
             position: absolute; 
             background-color: rgba(255, 255, 255, 0.2); 
@@ -65,33 +112,33 @@
             -webkit-tap-highlight-color: transparent; 
         }
         
-        /* 🎯 茶色の「閉じる」ボタン */
+        /* 🎯 閉じるボタン */
         .btn-close {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            background-color: #78350f !important; /* 濃い茶色 */
-            color: #ffffff !important;            /* 白文字 */
+            background-color: #78350f !important;
+            color: #ffffff !important;
             font-size: 0.9rem;
             font-weight: 500;
             padding: 0.5rem 1.2rem !important;
-            border-radius: 2rem !important;      /* 保存ボタンと同じ角丸 */
+            border-radius: 2rem !important;
             border: none !important;
             cursor: pointer;
             z-index: 1010;
             width: auto !important;
             height: auto !important;
-            white-space: nowrap;                 /* 文字の折り返しを防止 */
+            white-space: nowrap;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
             -webkit-appearance: none;
         }
         .btn-close:hover {
-            background-color: #451a03 !important; /* ホバー時に少し濃い茶色 */
+            background-color: #451a03 !important;
         }
         .btn-prev { left: 0.75rem; top: 50%; transform: translateY(-50%); }
         .btn-next { right: 0.75rem; top: 50%; transform: translateY(-50%); }
 
-        /* DLボタン（縦崩れ防止・横一列表示） */
+        /* DLボタン */
         .btn-download { 
             position: absolute;
             bottom: 2rem; 
@@ -105,7 +152,7 @@
             text-decoration: none; 
             font-weight: 500; 
             border: none !important; 
-            white-space: nowrap; /* 文字の折り返しを禁止 */
+            white-space: nowrap;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
         }
         .btn-download:hover { background-color: #047857; }
@@ -113,15 +160,44 @@
         .loading-text { font-size: 1.1rem; color: #059669; font-weight: 500; margin: 2rem 0; }
         .sub-btn { background-color: #e7e5e4; color: #44403c; border: 1px solid #d6d3d1; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 500; cursor: pointer; text-decoration: none; font-size: 0.9rem; }
         .sub-btn:hover { background-color: #d6d3d1; }
-        
-        .btn-container { margin-top: 3rem; }
-        .back-btn { display: inline-block; background-color: transparent; color: #57534e; border: 1px solid #d6d3d1; font-weight: 500; font-size: 1rem; padding: 0.75rem 2.5rem; border-radius: 0.75rem; text-decoration: none; transition: all 0.2s; cursor: pointer; }
-        .back-btn:hover { background-color: #f5f5f4; color: #2c2a29; }
-        footer { background-color: #1c1917; color: #a8a29e; padding: 2rem 0; text-align: center; font-size: 0.75rem; border-top: 1px solid #292524; margin-top: auto; }
-        
-        /* 📱 幅1024px以下（スマホ・小型タブレット・ウィンドウを狭めたPC）用の調整 */
-        @media (max-width: 1024px) {
-            h2 { font-size: 1.4rem; }
+
+        /* 共通フッター */
+        footer { 
+            background-color: #1c1917; 
+            padding: 2rem 1.5rem; 
+            border-top: 1px solid #292524; 
+            margin-top: 5rem; 
+        }
+        .footer-container { 
+            max-width: 896px; 
+            margin: 0 auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 0.75rem; 
+        }
+        .copyright { 
+            margin: 0; 
+            color: #78716c; 
+            font-size: 0.75rem; 
+            text-align: center; 
+        }
+        .footer-nav { 
+            text-align: left; 
+            padding-left: 15%; 
+            box-sizing: border-box;
+        }
+        .footer-link { 
+            color: #78716c; 
+            text-decoration: none; 
+            font-size: 0.75rem; 
+            transition: color 0.2s; 
+        }
+        .footer-link:hover { color: #34d399; }
+
+        @media (max-width: 640px) { 
+            h1 { font-size: 1.1rem; }
+            h2 { font-size: 1.35rem; } 
+            .footer-nav { padding-left: 10%; }
             .thumbnail-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
             .modal-btn { width: 44px; height: 44px; }
             .btn-prev { left: 0.75rem; }
@@ -135,6 +211,16 @@
     <header>
         <div class="nav-container">
             <h1>ウェルネスの森を守る会</h1>
+            <!-- 三本線ボタン -->
+            <button class="menu-btn" id="menuBtn" aria-label="メニューを開く">☰</button>
+            <!-- クリック時に表示されるドロップダウンメニュー -->
+            <nav class="dropdown-menu" id="dropdownMenu">
+                <a href="top.html">メインページ</a>
+                <a href="news.html">お知らせ</a>
+                <a href="schedule.html">活動予定</a>
+                <a href="member.html">メンバー専用</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="logout-link">ログアウト</a>
+            </nav>
         </div>
     </header>
 
@@ -157,25 +243,77 @@
 
         <!-- 🔍 拡大モーダル表示エリア -->
         <div id="imageModal" class="modal-overlay">
-            <!-- 🎯 茶色の「閉じる」ボタン -->
             <button class="btn-close" onclick="closeModal()" aria-label="閉じる">閉じる</button>
-            
             <button class="modal-btn btn-prev" onclick="prevImage()" aria-label="前の画像">❮</button>
             <img id="modalImg" class="modal-content" src="" alt="拡大写真">
             <button class="modal-btn btn-next" onclick="nextImage()" aria-label="次の画像">❯</button>
             <a id="downloadBtn" class="modal-btn btn-download" href="" download target="_blank">📥 この写真を保存</a>
         </div>
-        <!-- 戻るボタン -->
-        <div class="btn-container">
-            <button onclick="history.back()" class="back-btn">⬅ 前の画面に戻る</button>
-        </div>
     </main>
 
     <footer>
-        <p>&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
+        <div class="footer-container">
+            <p class="copyright">&copy; 2026 ウェルネスの森を守る会. All rights reserved.</p>
+            <div class="footer-nav">
+                <a href="aboutus.html" class="footer-link">私たちについて</a>
+            </div>
+        </div>
     </footer>
 
     <script>
+        // 三本線メニューの開閉制御
+        const menuBtn = document.getElementById('menuBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', () => {
+            dropdownMenu.classList.remove('show');
+        });
+
+        // =================================================================
+        // 🔒 認証・セッション管理処理
+        // =================================================================
+        const TIMEOUT_MINUTES = 10;
+        const INACTIVE_TIMEOUT = TIMEOUT_MINUTES * 60 * 1000;
+
+        function clearMemberAuth() {
+            localStorage.removeItem("isMemberAuthenticated");
+            localStorage.removeItem("authTimestamp");
+        }
+
+        function handleLogout() {
+            clearMemberAuth();
+            alert("ログアウトしました。");
+            window.location.href = "top.html";
+        }
+
+        function updateSessionTimestamp() {
+            if (localStorage.getItem("isMemberAuthenticated") === "true") {
+                const authTime = localStorage.getItem("authTimestamp");
+                const currentTime = new Date().getTime();
+
+                if (authTime && (currentTime - parseInt(authTime, 10) > INACTIVE_TIMEOUT)) {
+                    clearMemberAuth();
+                } else {
+                    localStorage.setItem("authTimestamp", currentTime.toString());
+                }
+            }
+        }
+
+        const userEvents = ['click', 'keydown', 'scroll', 'touchstart', 'mousemove'];
+        userEvents.forEach(eventType => {
+            window.addEventListener(eventType, updateSessionTimestamp, { passive: true });
+        });
+
+        updateSessionTimestamp();
+
+        // =================================================================
+        // 🖼️ アルバム機能処理
+        // =================================================================
         let allAlbumsData = {}; 
         let currentFolderPhotos = []; 
         let currentPhotoIndex = 0; 
@@ -184,7 +322,7 @@
             const loadingEl = document.getElementById("loading");
             
             try {
-                const response = await fetch('album_list.csv');
+                const response = await fetch('album_list.csv?t=' + new Date().getTime());
                 if (!response.ok) throw new Error('CSVファイルの取得に失敗しました');
                 
                 const text = await response.text();
@@ -237,7 +375,8 @@
                 item.className = "folder-link";
                 item.onclick = () => showImages(ym);
                 item.textContent = `${year}年${parseInt(month, 10)}月の活動`;
-                listView.appendChild(item);            });
+                listView.appendChild(item);
+            });
 
             if (!hasValidFolder) {
                 listView.innerHTML = '<div style="color: #78716c;">公開中の写真アルバムはありません。</div>';
