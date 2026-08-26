@@ -5,6 +5,11 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>メンバー専用ページ - ウェルネスの森を守る会</title>
+
+    <!-- 🖼️ タブアイコン -->
+    <link rel="icon" href="logo.png?v=2" type="image/png">
+    <link rel="apple-touch-icon" href="logo.png?v=2">
+
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -87,7 +92,7 @@
                 <a href="shashin_up.html" class="btn btn-menu">📸 画像のアップ</a>
                 
                 <button type="button" class="btn btn-logout" onclick="logout()">🔒 ログアウト</button>
-                <a href="top.html" class="btn btn-back" onclick="logout()">↩️ Topページに戻る</a>
+                <a href="top.html" class="btn btn-back">↩️ Topページに戻る</a>
             </div>
         </div>
     </main>
@@ -101,6 +106,20 @@
         const TIMEOUT_MINUTES = 10;
         const INACTIVE_TIMEOUT = TIMEOUT_MINUTES * 60 * 1000; // 10分（ミリ秒）
 
+        // 認証情報を完全にクリアする共通関数
+        function clearMemberAuth() {
+            localStorage.removeItem("isMemberAuthenticated");
+            localStorage.removeItem("authTimestamp");
+        }
+
+        // タイムスタンプを延長更新する処理
+        function extendSession() {
+            if (localStorage.getItem("isMemberAuthenticated") === "true") {
+                localStorage.setItem("authTimestamp", new Date().getTime().toString());
+            }
+        }
+
+        // ページ読み込み時
         window.addEventListener("DOMContentLoaded", () => {
             const isAuth = localStorage.getItem("isMemberAuthenticated");
             const authTime = localStorage.getItem("authTimestamp");
@@ -109,21 +128,25 @@
             // 認証済みかつ10分以内か判定
             if (isAuth === "true" && authTime && (currentTime - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
                 // 10分以内なので専用メニューを表示し、タイムスタンプを更新
-                localStorage.setItem("authTimestamp", currentTime.toString());
+                extendSession();
                 document.getElementById("auth-section").classList.add("hidden");
                 document.getElementById("menu-section").classList.remove("hidden");
+
+                // 操作監視（マウス移動、キー操作等）で10分タイマーを常に自動延長
+                ["mousemove", "keydown", "click", "scroll", "touchstart"].forEach(eventType => {
+                    window.addEventListener(eventType, extendSession, { passive: true });
+                });
             } else {
                 // 未認証、または10分を超えていたら認証情報をクリアして入力画面を表示
-                localStorage.removeItem("isMemberAuthenticated");
-                localStorage.removeItem("authTimestamp");
+                clearMemberAuth();
                 document.getElementById("auth-section").classList.remove("hidden");
                 document.getElementById("menu-section").classList.add("hidden");
             }
         });
 
-        // 🛡️ A案：明示的にログアウト（認証情報を消去してログイン画面に戻す）
+        // 明示的にログアウト（認証情報を完全消去してログイン画面に戻す）
         function logout() {
-            localStorage.removeItem("isMemberAuthenticated");
+            clearMemberAuth();
             document.getElementById("pw-input").value = "";
             document.getElementById("menu-section").classList.add("hidden");
             document.getElementById("auth-section").classList.remove("hidden");
@@ -165,7 +188,7 @@
             }).replace(/ /g, " ");
         }
 
-        // 2. checkPassword関数を更新
+        // パスワード判定処理
         function checkPassword() {
             const pwInput = document.getElementById("pw-input");
             let userInput = pwInput.value.trim();
@@ -182,11 +205,10 @@
             errorArea.innerText = "認証中...";
             errorArea.style.color = "#059669";
 
-            // GAS（code）へ判定リクエストを送信
             fetch(GAS_URL, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "text/plain" // GASのdoPostでパースしやすいよう指定
+                    "Content-Type": "text/plain"
                 },
                 body: JSON.stringify({
                     action: "checkPassword",
@@ -198,14 +220,19 @@
                 return response.json();
             })
             .then(data => {
-        // GAS側から { matched: true } が返ってきたか判定
                 if (data && data.matched === true) {
                     errorArea.innerText = "";
+                    // 認証フラグとタイムスタンプの両方を確実に保存
                     localStorage.setItem("isMemberAuthenticated", "true");
-		    localStorage.setItem("authTimestamp", new Date().getTime().toString());
+                    localStorage.setItem("authTimestamp", new Date().getTime().toString());
 
                     document.getElementById("auth-section").classList.add("hidden");
                     document.getElementById("menu-section").classList.remove("hidden");
+
+                    // ログイン後も操作監視を開始
+                    ["mousemove", "keydown", "click", "scroll", "touchstart"].forEach(eventType => {
+                        window.addEventListener(eventType, extendSession, { passive: true });
+                    });
                 } else {
                     errorArea.innerHTML = "パスワードが違います。<br>最新のパスワードは世話人から貰ってください。";
                     errorArea.style.color = "#b91c1c";
