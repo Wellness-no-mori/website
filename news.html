@@ -91,16 +91,16 @@
             color: #78716c; 
             font-weight: 700; 
         }
-	.badge-new-text {
-	    color: #ef4444;                  /* 赤文字 */
-	    border: 1px solid #ef4444;       /* 赤枠線 */
-	    font-size: 0.75rem;
-	    font-weight: bold;
-	    padding: 2px 6px;
-	    border-radius: 4px;
-	    margin-right: 8px;               /* ★ 右側に余白を設定 */
-	    display: inline-block;
-	}
+        .badge-new-text {
+            color: #ef4444;                  /* 赤文字 */
+            border: 1px solid #ef4444;       /* 赤枠線 */
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 8px;               /* 右側に余白を設定 */
+            display: inline-block;
+        }
         .news-body { 
             font-size: 0.95rem; 
             color: #292524; 
@@ -200,55 +200,46 @@
         // =================================================================
         // 🔒 認証・セッション管理処理
         // =================================================================
-        // ★ タイムアウト時間（分）を変数化（現在は10に設定）
         const TIMEOUT_MINUTES = 10;
         const INACTIVE_TIMEOUT = TIMEOUT_MINUTES * 60 * 1000;
 
-        function handleLogout() {
+        // 認証情報を完全削除する共通処理
+        function clearMemberAuth() {
+            localStorage.removeItem("isMemberAuthenticated");
             localStorage.removeItem("authTimestamp");
-            window.location.href = "index.html";
         }
 
+        // ログアウトボタン押下時
+        function handleLogout() {
+            clearMemberAuth();
+            alert("ログアウトしました。");
+            window.location.href = "top.html";
+        }
+
+        // 操作時にタイムスタンプを延長更新する関数
         function updateSessionTimestamp() {
-            localStorage.setItem("authTimestamp", new Date().getTime().toString());
-        }
-
-        function checkAuthSession() {
-            const authTime = localStorage.getItem("authTimestamp");
-            if (!authTime) return;
-
-            const currentTime = new Date().getTime();
-            if (currentTime - parseInt(authTime, 10) > INACTIVE_TIMEOUT) {
-                localStorage.removeItem("authTimestamp");
-                alert(`${TIMEOUT_MINUTES}分間操作がなかったため、自動ログアウトしました。`);
-                window.location.href = "index.html";
-            }
-        }
-
-        // メンバー専用ページへの遷移判定（未認証なら認証画面へ）
-        function goToMemberPage() {
-            const authTime = localStorage.getItem("authTimestamp");
-            const currentTime = new Date().getTime();
-
-            if (authTime && (currentTime - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
-                window.location.href = "senyou.html";
-            } else {
-                window.location.href = "member.html"; // パスワード入力画面
-            }
-        }
-
-        const userEvents = ['click', 'keydown', 'scroll', 'touchstart', 'mousemove'];
-        userEvents.forEach(event => {
-            window.addEventListener(event, () => {
+            if (localStorage.getItem("isMemberAuthenticated") === "true") {
                 const authTime = localStorage.getItem("authTimestamp");
-                if (authTime && (new Date().getTime() - parseInt(authTime, 10) <= INACTIVE_TIMEOUT)) {
-                    updateSessionTimestamp();
+                const currentTime = new Date().getTime();
+
+                // 放置により既に10分経過しているかチェック
+                if (authTime && (currentTime - parseInt(authTime, 10) > INACTIVE_TIMEOUT)) {
+                    clearMemberAuth();
+                } else {
+                    // 10分以内なら操作があったのでタイマーを最新に延長
+                    localStorage.setItem("authTimestamp", currentTime.toString());
                 }
-            }, { passive: true });
+            }
+        }
+
+        // ユーザーの操作（クリック・キー入力・スクロール等）を検知してタイマー延長
+        const userEvents = ['click', 'keydown', 'scroll', 'touchstart', 'mousemove'];
+        userEvents.forEach(eventType => {
+            window.addEventListener(eventType, updateSessionTimestamp, { passive: true });
         });
 
-        checkAuthSession();
-        setInterval(checkAuthSession, 60000);
+        // 初期読み込み時の認証チェック
+        updateSessionTimestamp();
 
         // =================================================================
         // 📢 お知らせ表示処理
