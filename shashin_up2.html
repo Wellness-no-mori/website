@@ -26,18 +26,51 @@
         input[type="file"] { padding: 0.6rem 0.8rem; background-color: #f5f5f4; cursor: pointer; }
         
         /* 🖼️ サムネイル一覧エリア */
-        .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 0.75rem; margin-top: 0.75rem; max-height: 240px; overflow-y: auto; padding: 0.5rem; background: #fafaf9; border-radius: 0.75rem; border: 1px dashed #d6d3d1; }
+        .preview-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); 
+            gap: 0.75rem; 
+            margin-top: 0.75rem; 
+            min-height: 110px;
+            max-height: 320px; /* ボタンが見えるよう適度な上限を設定 */
+            overflow-y: auto; 
+            resize: vertical; /* 手動で縦幅を拡張可能 */
+            padding: 0.5rem; 
+            background: #fafaf9; 
+            border-radius: 0.75rem; 
+            border: 1px dashed #d6d3d1; 
+            box-sizing: border-box;
+        }
         .preview-item { position: relative; aspect-ratio: 1; border-radius: 0.5rem; overflow: hidden; background: #e7e5e4; border: 1px solid #d6d3d1; }
-        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
-        .preview-item .remove-btn { position: absolute; top: 3px; right: 3px; background: rgba(220, 38, 38, 0.9); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
-        .preview-item .remove-btn:hover { background: #b91c1c; }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        
+        /* 💡 削除ボタンの背景：グレー */
+        .preview-item .remove-btn { 
+            position: absolute; 
+            top: 3px; 
+            right: 3px; 
+            background: rgba(107, 114, 128, 0.85); 
+            color: white; 
+            border: none; 
+            border-radius: 50%; 
+            width: 22px; 
+            height: 22px; 
+            font-size: 13px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            line-height: 1; 
+        }
+        .preview-item .remove-btn:hover { background: #374151; }
         .preview-count { font-size: 0.85rem; color: #059669; font-weight: 700; margin-top: 0.4rem; }
 
         /* 📊 プログレスバー */
         .progress-container { display: none; margin-top: 1.25rem; background-color: #e7e5e4; border-radius: 9999px; height: 12px; overflow: hidden; width: 100%; }
         .progress-bar { background-color: #059669; height: 100%; width: 0%; transition: width 0.3s ease; }
 
-        .btn-container { display: flex; gap: 1rem; margin-top: 2rem; }
+        .btn-container { display: flex; gap: 1rem; margin-top: 1.25rem; }
         .btn { flex: 1; padding: 0.95rem 0; border-radius: 0.75rem; font-weight: 700; font-size: 1.05rem; text-decoration: none; transition: all 0.2s; box-sizing: border-box; text-align: center; cursor: pointer; border: none; }
         
         .btn-primary { background-color: #059669; color: white; box-shadow: 0 4px 6px -1px rgba(6, 150, 105, 0.2); }
@@ -92,13 +125,15 @@
                 <div id="progress-bar" class="progress-bar"></div>
             </div>
 
-            <!-- 送信ボタン -->
-            <button type="button" class="btn btn-primary" id="btn-upload" style="width: 100%; margin-top: 1.25rem;" onclick="uploadPhotos()">写真を送信する</button>
-            
-            <div id="status-area" class="status-msg"></div>
+            <!-- 送信ボタン＆戻るボタンのエリア -->
+            <div id="action-area">
+                <button type="button" class="btn btn-primary" id="btn-upload" style="width: 100%; margin-top: 1.25rem;" onclick="uploadPhotos()">写真を送信する</button>
+                
+                <div id="status-area" class="status-msg"></div>
 
-            <div class="btn-container">
-                <a href="member.html" class="btn btn-secondary">↩️ メンバー専用のメニューに戻る</a>
+                <div class="btn-container">
+                    <a href="member.html" class="btn btn-secondary">↩️ メンバー専用のメニューに戻る</a>
+                </div>
             </div>
         </div>
     </main>
@@ -230,17 +265,16 @@
         // 🖼️ ファイル選択時の処理（サムネイルプレビュー描画）
         function handleFileSelect(event) {
             const newFiles = Array.from(event.target.files);
-            // 既存の写真に追加（重複除外も考慮）
             selectedFiles = [...selectedFiles, ...newFiles];
-            updatePreview();
+            updatePreview(true); // 💡 新しくファイルを選択した時はスクロール調整を有効にする
         }
 
         function removeFile(index) {
             selectedFiles.splice(index, 1);
-            updatePreview();
+            updatePreview(false);
         }
 
-        function updatePreview() {
+        function updatePreview(isNewSelection = false) {
             const previewGrid = document.getElementById("preview-grid");
             const previewCount = document.getElementById("preview-count");
             previewGrid.innerHTML = "";
@@ -277,6 +311,16 @@
                 item.appendChild(removeBtn);
                 previewGrid.appendChild(item);
             });
+
+            // 💡 サムネイルが全表示されたタイミングで「送信ボタン」と「戻るボタン」が画面内に収まるようスクロール
+            if (isNewSelection) {
+                setTimeout(() => {
+                    const actionArea = document.getElementById("action-area");
+                    if (actionArea) {
+                        actionArea.scrollIntoView({ behavior: "smooth", block: "end" });
+                    }
+                }, 100);
+            }
         }
 
         // 1枚のファイルをBase64変換してGASへアップロードする関数（Promise）
@@ -394,7 +438,7 @@
                 statusArea.innerText = `🎉 ${successCount}枚すべての写真を送信完了しました！\n（約5分後にアルバムに反映されます）`;
                 // リセット
                 selectedFiles = [];
-                updatePreview();
+                updatePreview(false);
                 document.getElementById("uploader-name").value = "";
             } else {
                 statusArea.className = "status-msg error";
